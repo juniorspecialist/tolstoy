@@ -15,4 +15,4 @@ $this->menu=array(
 
 <h2>Добавить шаблон описания</h2>
 
-<?php echo $this->renderPartial('_form', array('model'=>$model,'import'=>$import)); ?>
+<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

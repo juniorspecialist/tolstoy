@@ -6,6 +6,12 @@
  * Time: 21:25
  * To change this template use File | Settings | File Templates.
  */
+/**
+ * Checks if the current route matches with given routes
+ * @param array $routes
+ * @return bool
+ */
+
 class MyText
 {
     static public function lenghtWords($str){

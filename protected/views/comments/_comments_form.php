@@ -28,10 +28,12 @@
 </div>
 <?php endif; ?>
 
-        <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-    'id'=>'comments-form',
-    'enableAjaxValidation'=>false,
-)); ?>
+        <?php
+        $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+            'id'=>'comments-form',
+        'enableAjaxValidation'=>false,
+        ));
+        ?>
 
         <?php //echo $form->errorSummary($model); ?>
 

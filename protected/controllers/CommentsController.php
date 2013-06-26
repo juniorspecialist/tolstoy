@@ -162,7 +162,7 @@ class CommentsController extends Controller
             if($model->validate()){
                 $model->save();
                 Yii::app()->user->setFlash('msg','Спасибо, ваш комментарий успешно отправлен');
-                $this->renderPartial('comments', array('model'=>new Comments));
+                $this->renderPartial('comments', array('model'=>new Comments), false, true);
                 Yii::app()->end();
             }else{
                 $this->renderPartial('comments', array('model'=>$model), false, true);

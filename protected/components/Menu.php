@@ -51,4 +51,21 @@ class Menu extends CPortlet
 
         //$this->render('adminMenu');
     }
+
+    function isActive($route)
+    {
+        $routeCurrent = '';
+        if (Yii::app()->controller->id !== null) {
+            $routeCurrent .= sprintf('%s/', Yii::app()->controller->id);
+        }
+        $routeCurrent .= Yii::app()->controller->action->id;
+
+        //echo $routeCurrent.'<br>';
+
+        if($routeCurrent==$route){
+            return true;
+        }
+
+        return false;
+    }
 }

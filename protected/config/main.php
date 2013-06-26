@@ -8,7 +8,7 @@
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Система менеджмента копирайтеров',
-    'defaultController'=>'user',
+    'defaultController'=>'user/login',
 	// preloading 'log' component
 	'preload'=>array(
         'log',
@@ -84,7 +84,7 @@ return array(
 		'urlManager'=>array(
 			'urlFormat'=>'path',
 			'rules'=>array(
-                '' => 'site/index',
+                '' => 'user/login',
 				'<controller:\w+>/'=>'<controller>/index',
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',

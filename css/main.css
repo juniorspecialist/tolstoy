@@ -18,14 +18,20 @@ body
 
 #header
 {
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
+    text-align : center;
 	border-top: 3px solid #C9E0ED;
+    /*width: 50%;*/
+}
+.content H3{
+    text-align: center;
 }
 
 #content
 {
     padding: 20px;
+    padding-top: -15px;
 }
 
 #sidebar
@@ -181,6 +187,7 @@ div.search-form
 	margin: 0 0 15px 0;
 	padding: 5px 8px;
 	/*background:#EFFDFF;*/
+    font-size: 16px;
 }
 
 .portlet-content ul
