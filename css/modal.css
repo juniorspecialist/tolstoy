@@ -1,0 +1,60 @@
+﻿.lock {
+    /* when modal is opened we're removing scrollbars from the main content */
+    overflow: hidden;
+}
+
+.modal1 {
+    /* modal content is hidden till it's opened */
+    display: none;
+}
+
+.lock .modal1 {
+    /* show modal shim and content when it's opened */
+    display: block;
+
+    /* shim will stay fixed and will take all the space available */
+    position: fixed;
+    bottom: 0; left: 0; top: 0; right: 0;
+
+    /* if modal content doesn't fit inside the shim, display scrollbars */
+    overflow: auto;
+}
+
+/* Modal visual styles, these aren't important */
+/*body {*/
+    /*width: 800px;*/
+/*}*/
+
+.lock .modal1 {
+    background: rgba(0,0,0,0.5);
+
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000,endColorstr=#7F000000); /* IE6–IE8 */
+    zoom: 1;
+}
+
+.lock .modal1 {/*.content*/
+background: #eee;
+    width: 600px;
+    margin: 0 auto;
+
+    border: 3px solid #666;
+    padding: 20px;
+
+    margin-top: 20px;
+}
+
+.modal1 .close {
+    float: right;
+    text-decoration: none;
+    font-size: 40px;
+}
+
+
+/* Page visual styles, these aren't important */
+/*body {*/
+    /*font-family: Georgia;*/
+/*}*/
+
+/*li {*/
+    /*margin-bottom: 1em;*/
+/*}*/

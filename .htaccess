@@ -1,0 +1,15 @@
+#php_value display_errors 1
+#php_value display_startup_errors 1
+php_value post_max_size 50M
+AddDefaultCharset utf-8
+
+Options +FollowSymLinks
+IndexIgnore */*
+RewriteEngine on
+
+# ���� ���������� ��� ���� ����������, ���������� ��
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# � ��������� ������ �������������� ������ ����� index.php
+RewriteRule . index.php

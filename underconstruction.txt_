@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <request>
+            <auth>
+                <login>380978800696</login>
+                <password>paroler123</password>
+            </auth>
+            <message>
+                <from>PayMayDelo</from>
+                <text>Для вас появилось задание с номером 66 , www.paymay.ru</text><recipient>79112260006</recipient></message></request>
