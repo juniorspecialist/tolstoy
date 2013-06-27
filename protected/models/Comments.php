@@ -131,4 +131,23 @@ class Comments extends CActiveRecord
             ),
         );
     }
+
+    /*
+     * формируем ссылку для отправки POST запроса на добавление нового комментария по указанному адресу контроллеру
+     */
+    public function getLinkToForm($update='div.form-comments', $htmlOptions = array('class'=>'btn btn-primary')){
+
+        $link =  CHtml::ajaxSubmitButton('Отправить',
+            Yii::app()->createAbsoluteUrl('ajax/comment'),
+            array(
+                'type' => 'POST',
+                'success'=>'js:function(data){
+                    $("'.$update.'").html(data);
+                }',
+            ),
+            $htmlOptions
+        );
+
+        return $link;
+    }
 }

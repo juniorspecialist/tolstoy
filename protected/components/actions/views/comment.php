@@ -44,14 +44,14 @@
     <?php echo $form->error($model,'text'); ?>
 
     <?php
-//    echo CHtml::ajaxSubmitButton('Отправить',
-//        '/comments/create',
-//        array(
-//            'type' => 'POST',
-//            'success'=>'js:function(data){ $("div.form-comments").html(data); }',
-//        ),
-//        array('class'=>'btn btn-primary')
-//    );
+    echo CHtml::ajaxSubmitButton('Отправить',
+        '/comments/create',
+        array(
+            'type' => 'POST',
+            'success'=>'js:function(data){ $("div.form-comments").html(data); }',
+        ),
+        array('class'=>'btn btn-primary')
+    );
     ?>
     <?php $this->endWidget(); ?>
 

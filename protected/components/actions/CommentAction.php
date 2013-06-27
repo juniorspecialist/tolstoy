@@ -27,7 +27,7 @@ class CommentAction extends  CAction{
             }
         }
 
-        $this->renderPartial('application.components.views.comments', array('model'=>$model), false, true);
+        $this->getController()->renderPartial('application.components.comment.views._comments_form', array('model'=>$model));
 
         Yii::app()->end();
     }

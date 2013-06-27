@@ -56,6 +56,10 @@ if($model->status==Project::TASK_CHEKING_ADMIN){
 
 echo CHtml::link('Перейти к редактору текстов', '/project/admin/textlist/id/'.$model->id, array('style'=>'margin-left:20px;'));
 
+// виджет - форма со всплывающим окном для добавления комментария к проекту
+$this->widget('application.components.comment.CommentLinkWidget', array('model'=>get_class($model), 'model_id'=>$model->id));
+
+
 $this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'myModal')); ?>
 
 <div class="modal-header">
@@ -109,7 +113,10 @@ echo CHtml::link("Скачать ключевые слова проекта",
     )
 
 );
-$this->widget('CommentsWidget',array('model_id'=>$model->id, 'model'=>get_class($model)));
+
+//отображаем комментарии по проекту -
+$this->widget('application.components.comment.CommentsWidget',array('model_id'=>$model->id, 'model'=>get_class($model)));
+
 // отображаем ссылку для отклонения до момента принятия задания редактором
 if(Project::getStatusInDB($model->id)<Project::TASK_AGREE_ADMIN){
     $this->widget('ErrorsWidget',array('model_id'=>$model->id, 'model'=>get_class($model)));

@@ -17,9 +17,9 @@ class CommentsWidget extends CWidget{
 
     public function run(){
 
-        $model = new Comments();
-        $model->model = $this->model;
-        $model->model_id = $this->model_id;
+//        $model = new Comments();
+//        $model->model = $this->model;
+//        $model->model_id = $this->model_id;
 
         $criteria=new CDbCriteria;
         $criteria->compare('model',$this->model,true);
@@ -33,6 +33,9 @@ class CommentsWidget extends CWidget{
             ),
         ));
 
-        $this->render('application.components.views.comments', array('model'=>$model,'dataProvider'=>$dataProvider,));
+        $this->render('application.components.comment.views.comments', array(
+            //'model'=>$model,
+            'dataProvider'=>$dataProvider,
+        ));
     }
 }
