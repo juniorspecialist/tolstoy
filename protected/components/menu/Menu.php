@@ -30,16 +30,16 @@ class Menu extends CPortlet
 
             if(Yii::app()->user->role == User::ROLE_SA_ADMIN){// если пользователь супер-админ
 
-                $this->render('sa_admin');
+                $this->render('application.components.menu.views.sa_admin');
             }
             if(Yii::app()->user->role == User::ROLE_ADMIN){// если пользователь админ
-                $this->render('admin');
+                $this->render('application.components.menu.views.admin');
             }
             if(Yii::app()->user->role == User::ROLE_EDITOR){// если пользователь редактор
-                $this->render('editor');
+                $this->render('application.components.menu.views.editor');
             }
             if(Yii::app()->user->role == User::ROLE_COPYWRITER){// если пользователь копирайтер
-                $this->render('copywriter');
+                $this->render('application.components.menu.views.copywriter');
             }
         }
 

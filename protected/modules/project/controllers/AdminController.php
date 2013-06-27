@@ -118,38 +118,17 @@ class AdminController extends Controller{
     }
 
    	public function actionView($id){
+
            // модель самого проекта
            $model = $this->loadModel($id);
-           // модель личных сообщений
-           $msg = new Messages();
-           // заполняем нужными данными, для отправки сообщения
-           //$msg->author_id = Yii::app()->user->id;
-           $msg->model = get_class($model);// к какой моделе подвязано сообщение
-           $msg->model_id = $model->id;
-           $msg->is_new = 1;
            //-------------------------------------------------------------
            // причина отклоения проекта
            $reject = new RejectProject();
            $reject->model_id = $model->id;
            $reject->model = get_class($model);// к какой моделе подвязано
-           //-------------------------------------------------------------
-           $this->performAjaxValidation($msg);
 
-           if(isset($_POST['Messages'])){
-               $msg->attributes=$_POST['Messages'];
-               //$msg->create = time();
-               if($msg->validate()){
-                   $msg->save();
-                   Yii::app()->user->setFlash('msg','Спасибо, ваше сообщение успешно отправлено');
-                   $this->renderPartial('msg', array('msg'=>new Messages(), 'model'=>$model));
-                   Yii::app()->end();
-               }else{
-                   $this->renderPartial('msg', array('msg'=>$msg, 'model'=>$model));
-                   Yii::app()->end();
-               }
-           }
 
-           $this->render('view', array('model'=>$model, 'msg'=>$msg, 'reject'=>$reject));
+           $this->render('view', array('model'=>$model, 'reject'=>$reject));
    	}
 
     /*

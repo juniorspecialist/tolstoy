@@ -37,10 +37,10 @@ if($model->status==Project::TASK_CHEKING_ADMIN){
         array( // ajaxOptions
             'type' =>'POST',
             'beforeSend' => "function(request){
-         }",
+            }",
             'success' => "function( data ){
-            alert(data);
-        }",
+                alert(data);
+            }",
             'data' =>'project='.$model->id,
         ),
         array( //htmlOptions
@@ -60,17 +60,18 @@ echo CHtml::link('Перейти к редактору текстов', '/projec
 $this->widget('application.components.comment.CommentLinkWidget', array('model'=>get_class($model), 'model_id'=>$model->id));
 
 
-$this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'myModal')); ?>
+//$this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'myModal')); ?>
+<!--    <div class="modal-header">-->
+<!--        <a class="close" data-dismiss="modal">×</a>-->
+<!--        <h4>Отправка личного сообщения:</h4>-->
+<!--    </div>-->
+<!--    <div class="modal-body">-->
+<!--        --><?php //$this->renderPartial('msg', array('msg'=>$msg, 'model'=>$model)); ?>
+<!--    </div>-->
+<?php
+//$this->endWidget();
 
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
-    <h4>Отправка личного сообщения:</h4>
-</div>
-
-<div class="modal-body">
-    <?php $this->renderPartial('msg', array('msg'=>$msg, 'model'=>$model)); ?>
-</div>
-<?php $this->endWidget();
+$this->widget('application.components.msg.MessagesWidget',  array('model'=>get_class($model), 'model_id'=>$model->id));
 
 echo CHtml::link('Отклонить проект',
     '#',

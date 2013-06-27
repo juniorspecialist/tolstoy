@@ -29,6 +29,7 @@ class Messages extends CActiveRecord
 		return array(
 			array('author_id, create, model, model_id, msg_text,recipient_id', 'required'),
 			array('author_id, create, model_id, is_new, recipient_id', 'numerical', 'integerOnly'=>true),
+            array('is_new', 'default', 'value'=>1),
 			array('model', 'length', 'max'=>255),
             array('create', 'default', 'value'=>time()),
             array('author_id', 'default', 'value'=>Yii::app()->user->id),
@@ -139,5 +140,19 @@ class Messages extends CActiveRecord
         }else{
             return 'old_msg';
         }
+    }
+
+    /*
+     * кнопка для отправки личного сообщения из диалогового окна
+     */
+    public function getLinkToForm(){
+        return CHtml::ajaxSubmitButton('Отправить',
+            Yii::app()->createUrl('ajax/message'),
+            array(
+                'type' => 'POST',
+                'success'=>'js:function(data){ $("div.form-messages").html(data); }',
+            ),
+            array('class'=>'btn btn-primary')
+        );
     }
 }

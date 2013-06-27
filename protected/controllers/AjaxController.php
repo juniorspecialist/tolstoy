@@ -17,6 +17,12 @@ class AjaxController extends  Controller{
             'comment'=>array(
                 'class'=>'application.components.actions.CommentAction',
             ),
+            /*
+             * личные сообщение касательно проекта системы
+             */
+            'message'=>array(
+                'class'=>'application.components.actions.MessageAction'
+            ),
         );
     }
 

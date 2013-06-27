@@ -292,7 +292,7 @@ class Project extends CActiveRecord
         $data = Yii::app()->db->createCommand($sql)->queryAll();
         $result = array();
         foreach($data as $row){
-            $result[$row['id']] = UserModule::t($row['role']);
+            $result[$row['id']] = Yii::t('ru', $row['role']);
         }
 
         return $result;
@@ -303,8 +303,11 @@ class Project extends CActiveRecord
      * обновляем эти данные к проекте
      */
     public static function updateCount_texts($project_id, $count){
-        $sql = 'UPDATE {{project}} SET count_texts="'.(int)$count.'" WHERE id="'.$project_id.'"';
-        Yii::app()->db->createCommand($sql)->execute();
+        $sql = 'UPDATE {{project}} SET count_texts=:count WHERE id=:id';
+        $query = Yii::app()->db->createCommand($sql);
+        $query->bindValue(':count', $count, PDO::PARAM_INT);
+        $query->bindValue(':id', $project_id, PDO::PARAM_INT);
+        $query->execute();
     }
 
     /*

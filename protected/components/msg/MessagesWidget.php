@@ -15,13 +15,21 @@ class MessagesWidget extends CWidget{
     public function run(){
 
         $model = new Messages();
-        $model->model = $this->model;
+
         $model->model_id = $this->model_id;
-        $model->is_new = 1;
-        if(!empty($this->recipient_id)){
-            $model->recipient_id = $this->recipient_id;
+
+        $model->model = $this->model;
+
+        if(isset($_POST['Messages'])){
+
+            $model->attributes=$_POST['Messages'];
+
+            if($model->validate()){
+                $model->save();
+                Yii::app()->user->setFlash('msg','Спасибо, ваше сообщение успешно отправлено');
+            }
         }
 
-        $this->render('messages', array('model'=>$model));
+        $this->getController()->renderPartial('application.components.msg.views.messages', array('model'=>$model));
     }
 }

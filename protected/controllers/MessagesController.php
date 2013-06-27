@@ -27,10 +27,6 @@ class MessagesController extends Controller
 	public function accessRules()
 	{
 		return array(
-//			array('allow',  // allow all users to perform 'index' and 'view' actions
-//				'actions'=>array('index','view'),
-//				'users'=>array('*'),
-//			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('create','view','index'),//,'update'
 				'users'=>array('@'),
@@ -85,44 +81,6 @@ class MessagesController extends Controller
 	}
 
 	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
-//	public function actionUpdate($id)
-//	{
-//		$model=$this->loadModel($id);
-//
-//		// Uncomment the following line if AJAX validation is needed
-//		// $this->performAjaxValidation($model);
-//
-//		if(isset($_POST['Messages']))
-//		{
-//			$model->attributes=$_POST['Messages'];
-//			if($model->save())
-//				$this->redirect(array('view','id'=>$model->id));
-//		}
-//
-//		$this->render('update',array(
-//			'model'=>$model,
-//		));
-//	}
-
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
-//	public function actionDelete($id)
-//	{
-//		$this->loadModel($id)->delete();
-//
-//		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-//		if(!isset($_GET['ajax']))
-//			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-//	}
-
-	/**
 	 * Lists all models.
 	 */
 	public function actionIndex()
@@ -136,21 +94,6 @@ class MessagesController extends Controller
 			'model'=>$model,
 		));
 	}
-
-	/**
-	 * Manages all models.
-	 */
-//	public function actionAdmin()
-//	{
-//		$model=new Messages('search');
-//		$model->unsetAttributes();  // clear any default values
-//		if(isset($_GET['Messages']))
-//			$model->attributes=$_GET['Messages'];
-//
-//		$this->render('admin',array(
-//			'model'=>$model,
-//		));
-//	}
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

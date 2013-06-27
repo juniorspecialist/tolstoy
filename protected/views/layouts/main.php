@@ -26,22 +26,11 @@
 	<div id="header">
 		<div id="logo" style="margin: 0 auto;"><?php echo CHtml::encode(Yii::app()->name); ?></div>
 	</div><!-- header -->
-
-<!--	<div id="mainmenu">-->
-		<?php
-    if(!Yii::app()->user->isGuest){
-        $this->widget('Menu');
-    }
-
-//        $this->widget('zii.widgets.CMenu',array(
-//			'items'=>array(
-//				array('label'=>'Home', 'url'=>array('/site/index')),
-//				array('label'=>'Login', 'url'=>array('/user/login'), 'visible'=>Yii::app()->user->isGuest),
-//				array('label'=>UserModule::t('Logout').' ('.Yii::app()->user->name.')', 'url'=>array('/user/logout'), 'visible'=>!Yii::app()->user->isGuest)
-//			),
-//		));
-        ?>
-<!--	</div><!-- mainmenu -->
+    <?php
+        if(!Yii::app()->user->isGuest){
+            $this->widget('application.components.menu.Menu');
+        }
+    ?>
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php
             if(!Yii::app()->user->isGuest){
