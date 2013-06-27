@@ -9,7 +9,7 @@
 ?>
 <div class="form-comments">
 
-        <?php  if(Yii::app()->user->hasFlash('msg')): ?>
+<?php  if(Yii::app()->user->hasFlash('msg')): ?>
 <div class="flash-success">
     <?php echo Yii::app()->user->getFlash('msg'); ?>
     <script type="text/javascript">

@@ -39,10 +39,12 @@ $this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'commentsModal'));
 
             <?php
             echo CHtml::ajaxSubmitButton('Отправить',
-                '/comments/create',
+                Yii::app()->createUrl('comment'),
                 array(
                     'type' => 'POST',
-                    'success'=>'js:function(data){ $("div.form-comments").html(data); }',
+                    'success'=>'js:function(data){
+                        $("div.form-comments").html(data);
+                    }',
                 ),
                 array('class'=>'btn btn-primary')
             );

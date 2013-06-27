@@ -123,7 +123,7 @@ class AdminController extends Controller{
            // модель личных сообщений
            $msg = new Messages();
            // заполняем нужными данными, для отправки сообщения
-           $msg->author_id = Yii::app()->user->id;
+           //$msg->author_id = Yii::app()->user->id;
            $msg->model = get_class($model);// к какой моделе подвязано сообщение
            $msg->model_id = $model->id;
            $msg->is_new = 1;
@@ -137,7 +137,7 @@ class AdminController extends Controller{
 
            if(isset($_POST['Messages'])){
                $msg->attributes=$_POST['Messages'];
-               $msg->create = time();
+               //$msg->create = time();
                if($msg->validate()){
                    $msg->save();
                    Yii::app()->user->setFlash('msg','Спасибо, ваше сообщение успешно отправлено');

@@ -33,6 +33,6 @@ class CommentsWidget extends CWidget{
             ),
         ));
 
-        $this->render('comments', array('model'=>$model,'dataProvider'=>$dataProvider,));
+        $this->render('application.components.views.comments', array('model'=>$model,'dataProvider'=>$dataProvider,));
     }
 }

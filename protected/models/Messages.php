@@ -30,6 +30,8 @@ class Messages extends CActiveRecord
 			array('author_id, create, model, model_id, msg_text,recipient_id', 'required'),
 			array('author_id, create, model_id, is_new, recipient_id', 'numerical', 'integerOnly'=>true),
 			array('model', 'length', 'max'=>255),
+            array('create', 'default', 'value'=>time()),
+            array('author_id', 'default', 'value'=>Yii::app()->user->id),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, author_id, create, model, model_id, msg_text, is_new', 'safe', 'on'=>'search'),
@@ -132,7 +134,6 @@ class Messages extends CActiveRecord
      */
     static function getClassTbl($is_new){
 
-        file_put_contents(time().'.txt',$is_new);
         if($is_new==1){
             return 'new_msg';
         }else{
