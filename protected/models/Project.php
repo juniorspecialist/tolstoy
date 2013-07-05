@@ -286,10 +286,16 @@ class Project extends CActiveRecord
         // возможность отправить всем кроме себя
         $sql  = 'SELECT {{users}}.id, {{users}}.role
                 FROM {{project_users}}, {{users}}
-                WHERE {{project_users}}.project_id="'.$project_id.'"
+                WHERE {{project_users}}.project_id=:project_id
                     AND {{users}}.id={{project_users}}.user_id
-                    AND {{users}}.id!="'.Yii::app()->user->id.'"';
-        $data = Yii::app()->db->createCommand($sql)->queryAll();
+                    AND {{users}}.id!=:user_id';
+        $query = Yii::app()->db->createCommand($sql);
+
+        $query->bindValue(':project_id', $project_id, PDO::PARAM_INT);
+        $query->bindValue(':user_id', Yii::app()->user->id, PDO::PARAM_INT);
+
+        $data = $query->queryAll();
+
         $result = array();
         foreach($data as $row){
             $result[$row['id']] = Yii::t('ru', $row['role']);
@@ -320,15 +326,23 @@ class Project extends CActiveRecord
         // выбираем все задания
         $sql = 'SELECT {{text_data}}.import_var_value
                 FROM {{text}},{{text_data}},{{import_vars_shema}}
-                WHERE {{text}}.project_id="'.$project_id.'"
+                WHERE {{text}}.project_id=:project_id
                     AND {{text_data}}.text_id={{text}}.id
                     AND {{import_vars_shema}}.import_var_id={{text_data}}.import_var_id
-                    AND {{import_vars_shema}}.shema_type="1"
-                    AND {{import_vars_shema}}.num_id="'.$project_id.'"
-                    AND {{import_vars_shema}}.visible="1"
-                    AND {{import_vars_shema}}.edit="1"';
+                    AND {{import_vars_shema}}.shema_type=:shema_type
+                    AND {{import_vars_shema}}.num_id=:project_id
+                    AND {{import_vars_shema}}.visible=:visible
+                    AND {{import_vars_shema}}.edit=:edit';
 
-        $data = Yii::app()->db->createCommand($sql)->queryAll();
+        $query = Yii::app()->db->createCommand($sql);
+        $query->bindValue(':project_id', $project_id, PDO::PARAM_INT);
+        $query->bindValue(':shema_type', 1, PDO::PARAM_INT);
+        $query->bindValue(':project_id',  $project_id, PDO::PARAM_INT);
+        $query->bindValue(':visible', 1, PDO::PARAM_INT);
+        $query->bindValue(':edit', 1, PDO::PARAM_INT);
+
+        $data = $query->queryAll();
+
         // перебираем в цикле список полей доступных для редактирования копирайтору и очищаем их от пробелов и тегов
         $count = 0;
         foreach($data as $row){
@@ -336,7 +350,14 @@ class Project extends CActiveRecord
             $count+=strlen($text);
         }
         // теперь обновим фактическое кол-во символов в проекте
-        Yii::app()->db->createCommand('UPDATE {{project}} SET total_num_char_fact="'.$count.'" WHERE id="'.$project_id.'"')->execute();
+        $sql_update = 'UPDATE {{project}} SET total_num_char_fact=:count WHERE id=:project_Id';
+
+        $query_update = Yii::app()->db->createCommand($sql_update);
+
+        $query_update->bindValue(':count', $count,PDO::PARAM_INT);
+        $query_update->bindValue(':project_id', $project_id,PDO::PARAM_INT);
+
+        $query_update->execute();
     }
 
     /*

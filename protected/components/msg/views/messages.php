@@ -28,7 +28,7 @@ $this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'messagesModal'));
             ?>
                 <div class="row">
                     <?php echo $form->labelEx($model,'recipient_id'); ?>
-                    <?php echo $form->dropDownList($model,'recipient_id', Project::listRecipientFor($model->id)); ?>
+                    <?php echo $form->dropDownList($model,'recipient_id', Project::listRecipientFor($model->model_id)); ?>
                     <?php echo $form->error($model,'recipient_id'); ?>
                 </div>
             <?php
