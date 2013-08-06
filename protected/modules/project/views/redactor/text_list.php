@@ -19,8 +19,7 @@
              'name' => 'id',
              'header'=>'Заголовок',
              'type'=>'raw',
-             //'value' => 'CHtml::link(Text::getTitleText($data["title"],$data["num"]),array("redactor/text","id"=>$data["id"]))',
-             'value' => 'Text::getTitleText($data["title"],$data["num"])',
+             'value' => 'CHtml::link(Text::getTitleText($data["title"],$data["num"]),array("redactor/text","id"=>$data["id"]))',
          ),
          array(
              'name' => 'status',

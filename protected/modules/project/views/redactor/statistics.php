@@ -10,15 +10,14 @@ $this->widget('bootstrap.widgets.TbGridView', array(
     'id'=>'project-grid',
     'dataProvider'=>$dataProvider,
     'template'=>'{items}{pager}',
-    //'filter'=>$model,
+    'filter'=>$model,
     'columns'=>array(
         //'id',
         //'title',
         array(
             'name'=>'title',
             'type'=>'raw',
-            //'value'=>'CHtml::link($data->title,array("redactor/view","id"=>$data->id))'
-            'value'=>'$data->title'
+            'value'=>'CHtml::link($data->title,array("redactor/view","id"=>$data->id))'
         ),
         'total_num_char',
         'total_num_char_fact',
@@ -80,7 +79,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'name'=>'id',
             'header'=>'Стоимость проекта',
             'type'=>'raw',
-            'value'=>'$data->cost_project_redactor',
+            'value'=>'$data->total_cost*$data->total_num_char',
         ),
 //        'performer_login',
 //        'performer_pass',

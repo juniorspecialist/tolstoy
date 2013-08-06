@@ -25,12 +25,7 @@
     if(!$model->isNewRecord){
         // проверяем если уже по данному шаблону выставленные соотвествия по полям импорта из CSV
         $data = ImportVarsShema::getListFieldsByIdShema($model->id);
-        $div_checks = '<div style="width: 50%; padding-left: 543px;">';
-        $div_checks.= 'Отметить все'.CHtml::CheckBox('visibleall', false, array('id'=>'visible','style'=>'margin-right:75px;','onclick'=>'js:if($(this).is(":checked")){$(".visible").attr("checked", true)}else{$(".visible").attr("checked", false)}')).'';
-        $div_checks.='Отметить все'.CHtml::CheckBox('edit_all', false, array('id'=>'edit','style'=>'margin-right:30px;','onclick'=>'js:if($(this).is(":checked")){$(".edit").attr("checked", true)}else{$(".edit").attr("checked", false)}')).'';
-        $div_checks.='Отметить все'.CHtml::CheckBox('wiziwig_all', false, array('id'=>'wiziwig','onclick'=>'js:if($(this).is(":checked")){$(".wiziwig").attr("checked", true)}else{$(".wiziwig").attr("checked", false)}')).'';
-        $div_checks.= '</div>';
-        $filels = $div_checks;
+        $filels = '';
         $varsList = CHtml::listData(ImportVars::model()->findAll(), 'id', 'title');
         // обновление данных
         // получаем список проверок и формируем по ним список чекбоксов
@@ -44,9 +39,9 @@
             $hidden = CHtml::hiddenField('ImportVarsShemaID['.$column['label'].']', $index);
 
             // галочка для конкретного поля для редактирования, отображения и испольование редактора-ВИЗИ
-            $checkBox1 = '        Отображаемый столбец'.CHtml::CheckBox('visible['.$index.']',$column['visible']==1 ? true:false, array('class'=>'visible'));
-            $checkBox2 = '        Редактируемый столбец'.CHtml::CheckBox('edit['.$index.']',$column['edit']==1 ? true:false, array('class'=>'edit'));
-            $checkBox3 = '        Визивиг редактор'.CHtml::CheckBox('wysiwyg['.$index.']',$column['wysiwyg']==1 ? true:false, array('class'=>'wiziwig'));
+            $checkBox1 = '        Отображаемый столбец'.CHtml::CheckBox('visible['.$index.']',$column['visible']==1 ? true:false);
+            $checkBox2 = '        Редактируемый столбец'.CHtml::CheckBox('edit['.$index.']',$column['edit']==1 ? true:false);
+            $checkBox3 = '        Визивиг редактор'.CHtml::CheckBox('wysiwyg['.$index.']',$column['wysiwyg']==1 ? true:false);
 
 
             $checkBox = $checkBox1. $checkBox2. $checkBox3;

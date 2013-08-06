@@ -5,7 +5,7 @@
 	'enableAjaxValidation'=>false,
 )); ?>
     <!-- цикл по полям со значениями, кроме ключевых слов и сведений, ключевики выводим отдельно с отдельном диве, для скрывания и ссылка для скачивания ключевиков -->
-<?php
+    <?php
     $formElements = '';
     // список сведений - обработанных ключевиков
     $reductions = array();
@@ -53,17 +53,17 @@
     }
     $keyWords.='</table></div> ';
     echo $formElements;
-?>
-<?php // если есть ключевые слова по тексту - выводим их
-    if($counterKeyWords!=0){
-        echo $keyWords;
-    }
-    // если в задании есть "СВЕДЕНИЯ" - выводим их на экран в ввиде списка
-    if(!empty($reductions)){
-        $select_reduction = CHtml::dropDownList('reductions_form','',$reductions, array('size'=>10, 'style'=>'width:500px;'));
-        echo '<div class="row"><label for="сведения">Сведения</label>'.$select_reduction.'</div>';//$reductions
-    }
-?>
+    ?>
+    <?php // если есть ключевые слова по тексту - выводим их
+        if($counterKeyWords!=0){
+            echo $keyWords;
+        }
+        // если в задании есть "СВЕДЕНИЯ" - выводим их на экран в ввиде списка
+        if(!empty($reductions)){
+            $select_reduction = CHtml::dropDownList('reductions_form','',$reductions, array('size'=>10, 'style'=>'width:500px;'));
+            echo '<div class="row"><label for="сведения">Сведения</label>'.$select_reduction.'</div>';//$reductions
+        }
+     ?>
 
     <div class="row">
    		<?php echo $form->hiddenField($model,'project_id'); ?>
@@ -72,36 +72,12 @@
    	</div>
     <div class="row buttons">
    		<?php
-        //формируем ссылку для принятия задания для админа
-        echo CHtml::ajaxLink(
-            "Принять задание",
-            //Yii::app()->createUrl('project/admin/agree1' ),
-            '',
-            array( // ajaxOptions
-                'type' =>'POST',
-                'beforeSend' => "function(request){
-                }",
-                'success' => "function(data){
-                    window.location = data;
-                    alert('Задание успешно принято');
-                }",
-                'data' =>'project_id='.$model->id.'&action=accept_text',
-            ),
-            array(
-                'href' => '#',
-                //'style'=>'margin-left:20px;',
-                'class'=>'admin_links',
-                'id'=>uniqid(),
-            )
-        );
-        echo CHtml::link('Сохранить задание',
-            'javascript:void(0)',
-            array(
-                'id'=>'save',
-                'style'=>'margin-left:50px;'
-            )
-        );
-
+           $this->widget('bootstrap.widgets.TbButton',array(
+           	'label' => $model->isNewRecord ? 'Добавить' : 'Принять задание',
+            'buttonType'=>'submit',
+           	'type' => 'submit',
+           	'size' => 'large'
+           ));
         echo CHtml::link('Отклонить задание',
             '#',
             array(
@@ -110,7 +86,7 @@
                 'style'=>'margin-left:50px;'
             )
         );
-        ?>
+           ?>
    	</div>
     <?php
     $this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'rejectProject')); ?>
@@ -165,14 +141,7 @@
 
     <a onclick="javascript:editCategory" data-toggle="modal" data-target="#myModal" style="color:green;font-size:8pt;text-decoration:none;border-bottom: 1px green dashed;" id="editCategory" href="javascript:void(0)">Добавить ключевое слово</a>
 </div><!-- form -->
-<?php $this->widget('ErrorsWidget',array('model_id'=>$model->id, 'model'=>get_class($model))); ?>
 <?php $this->widget('CommentsWidget',array('model_id'=>$model->id, 'model'=>get_class($model))); ?>
 <script type="text/javascript">
-    $(document).ready(function(){
-        // отлавливаем клик по кнопке - ПРИНЯТИЕ задания админом
-        $('#save').click(function (){
-            // для админа просто SUBMIT формы и принятие задания
-            $('#text-form').submit();
-        });
-    });
+    $('a.del_link')
 </script>

@@ -20,13 +20,6 @@ $('.search-form form').submit(function(){
 ?>
 
 <h2>Управление проектами</h2>
-<style>
-    .grid-view {
-        font-size: 12px !important;
-        overflow: auto !important;
-        padding-top: 5px !important;
-    }
-</style>
 
 <?php
 //echo CHtml::link('Advanced Search','#',array('class'=>'search-button'));
@@ -149,7 +142,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'name'=>'id',
             'header'=>'Стоимость проекта',
             'type'=>'raw',
-            'value'=>'($data->total_cost*$data->total_num_char)/1000',
+            'value'=>'$data->total_cost*$data->total_num_char',
             'filter' => false,
         ),
         array(

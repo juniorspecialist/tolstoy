@@ -136,26 +136,104 @@ class CommentsController extends Controller
             'dataCopywriter'=>$dataCopywriter,
 		));
     }
-
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+//	public function actionView($id)
+//	{
+//		$this->render('view',array(
+//			'model'=>$this->loadModel($id),
+//		));
+//	}
+//
+//	/**
+//	 * Creates a new model.
+//	 * If creation is successful, the browser will be redirected to the 'view' page.
+//	 */
 	public function actionCreate(){
 
-        if(Yii::app()->request->isAjaxRequest){
-            $model=new Comments;
-            // отправили POST запрос на добавление нового комментария
-            if(isset($_POST['Comments'])){
-                $model->attributes = $_POST['Comments'];
-                if($model->validate()){
-                    $model->save();
-                    Yii::app()->user->setFlash('msg','Спасибо, ваш комментарий успешно отправлен');
-                    $model = new Comments;
-                }
+		$model=new Comments;
+        // отправили POST запрос на добавление нового комментария
+        if(isset($_POST['Comments'])){
+
+            $model->attributes = $_POST['Comments'];
+
+            if($model->validate()){
+                $model->save();
+                Yii::app()->user->setFlash('msg','Спасибо, ваш комментарий успешно отправлен');
+                $this->renderPartial('comments', array('model'=>new Comments));
+                Yii::app()->end();
+            }else{
+                $this->renderPartial('comments', array('model'=>$model), false, true);
+                Yii::app()->end();
             }
-            $this->renderPartial('components.actions.views.comment', array('model'=>$model), false, true);
-            Yii::app()->end();
-        }else{
-            throw new CHttpException(400,'Не корректный запрос.');
         }
 	}
+//
+//	/**
+//	 * Updates a particular model.
+//	 * If update is successful, the browser will be redirected to the 'view' page.
+//	 * @param integer $id the ID of the model to be updated
+//	 */
+//	public function actionUpdate($id)
+//	{
+//		$model=$this->loadModel($id);
+//
+//		// Uncomment the following line if AJAX validation is needed
+//		// $this->performAjaxValidation($model);
+//
+//		if(isset($_POST['Comments']))
+//		{
+//			$model->attributes=$_POST['Comments'];
+//			if($model->save())
+//				$this->redirect(array('view','id'=>$model->id));
+//		}
+//
+//		$this->render('update',array(
+//			'model'=>$model,
+//		));
+//	}
+//
+//	/**
+//	 * Deletes a particular model.
+//	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+//	 * @param integer $id the ID of the model to be deleted
+//	 */
+//	public function actionDelete($id)
+//	{
+//		$this->loadModel($id)->delete();
+//
+//		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+//		if(!isset($_GET['ajax']))
+//			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+//	}
+//
+//	/**
+//	 * Lists all models.
+//	 */
+//	public function actionIndex()
+//	{
+//		$dataProvider=new CActiveDataProvider('Comments');
+//		$this->render('index',array(
+//			'dataProvider'=>$dataProvider,
+//		));
+//	}
+//
+//	/**
+//	 * Manages all models.
+//	 */
+//	public function actionAdmin()
+//	{
+//		$model=new Comments('search');
+//		$model->unsetAttributes();  // clear any default values
+//		if(isset($_GET['Comments']))
+//			$model->attributes=$_GET['Comments'];
+//
+//		$this->render('admin',array(
+//			'model'=>$model,
+//		));
+//	}
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

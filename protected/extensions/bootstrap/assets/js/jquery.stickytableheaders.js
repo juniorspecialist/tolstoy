@@ -1,10 +1,10 @@
 /*! Copyright (c) 2011 by Jonas Mosbech - https://github.com/jmosbech/StickyTableHeaders
-    MIT license info: https://github.com/jmosbech/StickyTableHeaders/blob/master/license.txt */
+ MIT license info: https://github.com/jmosbech/StickyTableHeaders/blob/master/license.txt */
 
 ;(function ($, window, undefined) {
     'use strict';
 
-    var name = 'stickyTableHeaders';
+    var pluginName = 'stickyTableHeaders';
     var defaults = {
         fixedOffset: 0
     };
@@ -17,10 +17,6 @@
         // Access to jQuery and DOM versions of element
         base.$el = $(el);
         base.el = el;
-
-        // Listen for destroyed, call teardown
-        base.$el.bind('destroyed',
-            $.proxy(base.teardown, base));
 
         // Cache DOM refs for performance reasons
         base.$window = $(window);
@@ -45,14 +41,10 @@
                 base.$clonedHeader = base.$originalHeader.clone();
 
                 // check whether the cloned header has filters
-                if($('tr.filters', base.$clonedHeader).length) {
+                if($('tr.filters', base.$clonedHeader).length)
+                {
                     // remove them, they will have to be added dynamically
                     $('tr.filters', base.$clonedHeader).remove();
-                    $('th', base.$originalHeader).each(function (index) {
-                        var $this = $(this);
-                        var $origCell = $('th', base.$originalHeader).eq(index);
-                        $this.css('width', $origCell.width());
-                    });
                 }
                 base.$clonedHeader.addClass('tableFloatingHeader');
                 base.$clonedHeader.css({
@@ -69,52 +61,24 @@
 
                 // enabling support for jquery.tablesorter plugin
                 // forward clicks on clone to original
-                $('th', base.$clonedHeader).on('click.' + name, function (e) {
+                $('th', base.$clonedHeader).click(function (e) {
                     var index = $('th', base.$clonedHeader).index(this);
                     $('th', base.$originalHeader).eq(index).click();
                 });
-                $this.on('sortEnd.' + name, base.updateWidth);
+                $this.bind('sortEnd', base.updateWidth);
             });
 
             base.updateWidth();
             base.toggleHeaders();
 
-            base.bind();
-        };
-
-        base.destroy = function (){
-            base.$el.unbind('destroyed', base.teardown);
-            base.teardown();
-        };
-
-        base.teardown = function(){
-            $.removeData(base.el, 'plugin_' + name);
-            base.unbind();
-
-            base.$clonedHeader.remove();
-            base.$originalHeader.removeClass('tableFloatingHeaderOriginal');
-            base.$originalHeader.css('visibility', 'visible');
-
-            base.el = null;
-            base.$el = null;
-        };
-
-        base.bind = function(){
-            base.$window.on('scroll.' + name, base.toggleHeaders);
-            base.$window.on('resize.' + name, base.toggleHeaders);
-            base.$window.on('resize.' + name, base.updateWidth);
-            // TODO: move tablesorter bindings here
-        };
-
-        base.unbind = function(){
-            // unbind window events by specifying handle so we don't remove too much
-            base.$window.off('.' + name, base.toggleHeaders);
-            base.$window.off('.' + name, base.updateWidth);
-            base.$el.off('.' + name);
-            base.$el.find('*').off('.' + name);
+            base.$window.scroll(base.toggleHeaders);
+            base.$window.resize(base.toggleHeaders);
+            base.$window.resize(base.updateWidth);
         };
 
         base.toggleHeaders = function () {
+            if(!base.$originalHeader.parent('table').is(':visible'))
+                return;
             base.$el.each(function () {
                 var $this = $(this);
 
@@ -131,7 +95,8 @@
                         return;
                     }
                     filters = $('tr.filters', base.$originalHeader);
-                    if(filters.length) {
+                    if(filters.length)
+                    {
                         filters.insertAfter(base.$clonedHeader.children().eq(0));
                     }
                     base.$clonedHeader.css({
@@ -148,7 +113,8 @@
                 else if (base.isCloneVisible) {
                     filters = $('tr.filters', base.$clonedHeader);
                     base.$clonedHeader.css('display', 'none');
-                    if(filters.length) {
+                    if(filters.length)
+                    {
                         filters.insertAfter(base.$originalHeader.children().eq(0));
                     }
                     base.$originalHeader.css('visibility', 'visible');
@@ -174,17 +140,12 @@
         base.init();
     }
 
-    // A plugin wrapper around the constructor,
+    // A really lightweight plugin wrapper around the constructor,
     // preventing against multiple instantiations
-    $.fn[name] = function ( options ) {
+    $.fn[pluginName] = function ( options ) {
         return this.each(function () {
-            var instance = $.data(this, 'plugin_' + name);
-            if (instance) {
-                if (typeof options === "string") {
-                    instance[options].apply(instance);
-                }
-            } else if(options !== 'destroy') {
-                $.data(this, 'plugin_' + name, new Plugin( this, options ));
+            if (!$.data(this, 'plugin_' + pluginName)) {
+                $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
             }
         });
     };

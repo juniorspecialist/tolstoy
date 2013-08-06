@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * This is the model class for table "{{text}}".
+ *
+ * The followings are the available columns in table '{{text}}':
+ * @property integer $id
+ * @property integer $project_id
+ * @property integer $status
+ */
 class Text extends CActiveRecord
 {
     // метка ошибок, при проверке данных по выбранным проверкам в задании, храним массив ошибок по всем полям
@@ -92,26 +101,16 @@ class Text extends CActiveRecord
                 //$errors = CheckingImportVars::checkingFieldByRules($i, $val, $this->project_id, $this->id, $key_words, $project);
                 // если не пустое значение ошибок, тогда записываем ошибку в общий список ошибок по проверке в задании
                 if(empty($val)){
-                    $this->addError('error','Не все поля заполнены');
+                    $this->addError('error','Обнаружены ошибки при проверке данных:');
                     $this->detail_error = array('Необходимо заполнить все поля задания');
                     break;
                     return false;
                 }
             }
 
+            // если нет ошибок, тогда запускаем очередь проверок
             if(!$this->hasErrors()){
-                // если нет ошибок, тогда проверим по логу очереди проверок, есть ли проверки с ошибками
-                $sql = 'SELECT COUNT(id) AS count
-                    FROM {{queue}}
-                    WHERE user_id="'.Yii::app()->user->id.'"
-                        AND text_id="'.$this->id.'"
-                        AND result="'.Queue::RESULT_STATUS_ERROR.'"';
-
-                $result = Yii::app()->db->createCommand($sql)->queryRow();
-                // есть ошибки при запуске очереди проверок, необходимо перезапустить проверки по заданию
-                if($result['count']>0){
-                    $this->addError('error','В ходе проверок обнаружены ошибки, необходимо заново перезапустить проверки');
-                }
+                Queue::queueStart($this->id, $this->project_id);
             }
 
             return true;
@@ -122,6 +121,7 @@ class Text extends CActiveRecord
      * если редактор выбрал статус ошибки, то должен указать описание этой ошибки для проверяемого текста - задания копирайтора
      */
     public function description_error(){
+        //file_put_contents('error.txt',$this->status_new);
         // если редактор установил что есть ошибки, то должен указать описание ошибки
         if($this->status_new=='error'){
 
@@ -227,12 +227,6 @@ class Text extends CActiveRecord
             // изменим статус проекта на "Задание проверяется админом"
             Project::afterChangeDataInProject($this->project_id, Project::TASK_CHEKING_ADMIN, $this->num);
         }
-
-        // отклонения задания админом проекта или редактором
-        if($this->status==self::TEXT_NOT_ACCEPT_ADMIN || $this->status==self::TEXT_NOT_ACCEPT_EDITOR){
-            // сделаем доступными запуск проверок для копирайтора
-            Queue::cancelQueueByTextWithUser($this->id, $this->project_id, $this->status);
-        }
     }
 
     /*
@@ -246,55 +240,5 @@ class Text extends CActiveRecord
         }else{
             return $title;
         }
-    }
-
-    /*
-     * находим список заданий по проекту
-     */
-    static function getTextListByProject($project_id){
-        $sql = 'SELECT * FROM {{text}} WHERE project_id="'.$project_id.'"';
-        $data = Yii::app()->db->createCommand($sql)->queryAll();
-        return $data;
-    }
-
-    /*
-     * просмотр задания
-     * подключаем - скрипт ВИЗИ_ВИГ редактора, и находим массив полей для отображения
-     */
-    public function viewText($withJS = true){
-
-        if($withJS){
-            Yii::app()->bootstrap->registerAssetCss('redactor.css');
-            Yii::app()->bootstrap->registerAssetJs('redactor.min.js');
-            Yii::app()->bootstrap->registerAssetJs('locales/redactor.ru.js');
-        }
-
-        // sql-запрос на выборку полей с данными для выбранного текста
-        $sql = 'SELECT {{text_data}}.id, {{text_data}}.import_var_value, {{import_vars}}.title,{{text_data}}.import_var_id
-                FROM {{text_data}},{{import_vars}}
-                WHERE {{text_data}}.text_id='.$this->id.'
-                    AND {{import_vars}}.id={{text_data}}.import_var_id';
-
-        $data = Yii::app()->db->createCommand($sql)->queryAll();
-
-        return $data;
-    }
-
-    /*
-     * автоматическое сохранение данных из задания через интервал времени либо, после отправки запроса на проверку данных
-     * через проверки по текстам из задания
-     */
-    static function avtoSaveText($field_id,$field_value){
-
-        $sqlUpdate = 'UPDATE {{text_data}} SET import_var_value=:import_var_value WHERE id=:id';
-
-        $command=Yii::app()->db->createCommand($sqlUpdate);
-
-        // установим значение поля(НОВОЕ)
-        $command->bindParam(":import_var_value",$field_value,PDO::PARAM_STR);
-        // установим ID поля которое нужно обновить
-        $command->bindParam(":id", $field_id,PDO::PARAM_INT);
-        //GO
-        $command->execute();
     }
 }

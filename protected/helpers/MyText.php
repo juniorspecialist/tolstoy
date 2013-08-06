@@ -6,12 +6,6 @@
  * Time: 21:25
  * To change this template use File | Settings | File Templates.
  */
-/**
- * Checks if the current route matches with given routes
- * @param array $routes
- * @return bool
- */
-
 class MyText
 {
     static public function lenghtWords($str){
@@ -55,7 +49,7 @@ class MyText
         $result = '';// результирующая строка
 
         for($i=0;$i<$lenght;$i++){
-            $rnd = rand(0, strlen($source)-1);
+            $rnd = rand(0, strlen($source));
             $result.=$source[$rnd];
         }
 

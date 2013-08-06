@@ -50,7 +50,6 @@ class RedactorController extends  Controller{
         // для супер_админа выводим все проекты, за всё время
         $criteria->with = array('admin');
         $criteria->together = true;
-        $criteria->condition = ' t.status!="'.Project::TASK_AGREE_ADMIN.'" AND t.status!="'.Project::TASK_CHEKING_ADMIN.'"';
         // находим текст с учётом, что к данному тексту подвязан именно текущий юзер-копирайтор
    		$model = Project::model()->findByPk($id,$criteria);
 
@@ -67,24 +66,20 @@ class RedactorController extends  Controller{
     public function loadModelText($id){
         //смотреть тексты может редактор подвязан к тексту
         $sql = 'SELECT {{text}}.*
-                FROM {{project_users}}, {{text}}, {{project}}
+                FROM {{project_users}}, {{text}}
                 WHERE {{text}}.project_id={{project_users}}.project_id
                   AND {{project_users}}.user_id="'.Yii::app()->user->id.'"
-                  AND {{text}}.id="'.$id.'"
-                  AND {{project}}.id = {{project_users}}.project_id
-                  AND ({{project}}.status NOT IN ("'.Project::TASK_CHEKING_ADMIN.'","'.Project::TASK_AGREE_REDACTOR.'","'.Project::TASK_AGREE_ADMIN.'"))';
+                  AND {{text}}.id="'.$id.'"';
 
         $find = Yii::app()->db->createCommand($sql)->queryRow();
 
-        //echo '<pre>'; print_r($find); die();
-
-        if($find==null){
+        if($find===null){
             throw new CHttpException(404,'The requested page does not exist.');
         }
 
         // находим текст с учётом, что к данному тексту подвязан именно текущий юзер-копирайтор
         // редактор может открывать тексты лишь после того как они прошли автомат. проверки при обновлении записи копирайтором(статус-TEXT_AVTO_CHECK)
-        $model = Text::model()->findByPk($id, 'status!=:status',array(':status'=>Text::TEXT_ACCEPT_ADMIN));//, 'status=:status',array(':status'=>Text::TEXT_AVTO_CHECK)
+        $model = Text::model()->findByPk($id);//, 'status=:status',array(':status'=>Text::TEXT_AVTO_CHECK)
 
         if($model===null){
             throw new CHttpException(404,'The requested page does not exist.');
@@ -98,11 +93,19 @@ class RedactorController extends  Controller{
      */
     public function actionText($id){
         // форма для редактирования и принятия текста для редактора
+        Yii::app()->bootstrap->registerAssetCss('redactor.css');
+        Yii::app()->bootstrap->registerAssetJs('redactor.min.js');
+        Yii::app()->bootstrap->registerAssetJs('locales/redactor.ru.js');
         // используем данные из модели, для проверки соотвествия - проекта - тексту и доступов по юзеру
         $model = $this->loadModelText($id);
 
-        // подключаем скрипты редактора и находим список полей для задания
-        $data = $model->viewText();
+        // sql-запрос на выборку полей с данными для выбранного текста
+        $sql = 'SELECT {{text_data}}.id, {{text_data}}.import_var_value, {{import_vars}}.title,{{text_data}}.import_var_id
+                FROM {{text_data}},{{import_vars}}
+                WHERE {{text_data}}.text_id='.$id.'
+                    AND {{import_vars}}.id={{text_data}}.import_var_id';
+
+        $data = Yii::app()->db->createCommand($sql)->queryAll();
         //-------------------------------------------------------------
         // причина отклоения проекта
         $reject = new RejectProject();
@@ -115,9 +118,9 @@ class RedactorController extends  Controller{
             $model->attributes = $_POST['Text'];
 
             // если включены автопроверки для редактора, тогда запускаем их при сохранении задания
-//            if(CheckingImportVars::isEnabledChekingByUser($model->project_id)){
-//                $model->setScenario('checking');
-//            }
+            if(CheckingImportVars::isEnabledChekingByUser($model->project_id)){
+                $model->setScenario('checking');
+            }
             if($model->validate()){
                 // редактор принял выполненное задание копирайтором, всё отлично обновим статус
                 $model->status = Text::TEXT_ACCEPT_EDITOR;
@@ -157,25 +160,9 @@ class RedactorController extends  Controller{
         // получаем массив данных, для отображения в таблице
         $data = Yii::app()->db->createCommand($sql)->queryAll();
 
-        $result = array();
-        // перебираем массив для формирования ссылок на задания, чтобы копирайтер последовательно их мог выполнять
-        // т.е.выполнил 2 задания перешёл на третье, а не любое на выбор
-        foreach($data as $i=>$row){
-            // если задание прниял админ, то к нему нет доступа более у редактора
-            if($row['status']!=Text::TEXT_ACCEPT_ADMIN){
-                if(empty($row['title'])){
-                    $row['title'] = CHtml::link(Text::getTitleText($row["title"],$row["num"]),array("redactor/text","id"=>$row["id"]));
-                }else{
-                    $row['title'] = CHtml::link($row["title"],array("redactor/text","id"=>$row["id"]));
-                }
-            }
-
-            $result[] = $row;
-        }
-
-        $dataProvider=new CArrayDataProvider($result, array(
+        $dataProvider=new CArrayDataProvider($data, array(
             'pagination'=>array(
-                'pageSize'=>count($result),
+                'pageSize'=>count($data),
             ),
         ));
         $this->render('text_list', array('dataProvider'=>$dataProvider));
@@ -220,8 +207,7 @@ class RedactorController extends  Controller{
         //если пользователь НЕ_СУПЕР_АДМИН, тогда выводим лишь его проекты
         $criteria->with = array('admin');
         $criteria->together = true;
-        //$criteria->condition = 't.status!='.Project::TASK_CHEKING_REDACTOR;
-        $criteria->condition  = 't.status!='.Project::TASK_CHEKING_REDACTOR.' AND t.status!='.Project::POSTED_TO_PERFORMED.' AND t.status!='.Project::TASK_CANCEL_ADMIN;
+        $criteria->condition = 't.status!='.Project::TASK_CHEKING_REDACTOR;
 
         $dataProvider =  new CActiveDataProvider('Project', array(
             'criteria'=>$criteria,
@@ -285,7 +271,11 @@ class RedactorController extends  Controller{
         //если пользователь НЕ_СУПЕР_АДМИН, тогда выводим лишь его проекты
         $criteria->with = array('admin');
         $criteria->together = true;
-        $criteria->condition  = 't.status='.Project::TASK_CHEKING_REDACTOR.' OR t.status='.Project::POSTED_TO_PERFORMED.' OR t.status='.Project::TASK_CANCEL_ADMIN.' OR t.status='.Project::PERFORMED;
+
+        $criteria->compare('t.status',Project::TASK_CHEKING_REDACTOR);
+//        $criteria->compare('title',$model->title,true);
+//        $criteria->compare('type_job',$model->type_job,true);
+
 
         $dataProvider =  new CActiveDataProvider('Project', array(
             'criteria'=>$criteria,
@@ -356,7 +346,7 @@ class RedactorController extends  Controller{
                 Project::afterChangeDataInProject($_POST['project'], Project::TASK_AGREE_REDACTOR,'');
                 echo 'Проект успешно принят редактором';
             }else{
-                echo 'Нет возможности принять проект, задания в проекте должны быть все приняты редактором/админом';
+                echo 'Нет возможности принять проект, задания в проекте должны быть все приняты редактором';
             }
         }
     }

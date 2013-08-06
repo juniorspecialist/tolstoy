@@ -42,9 +42,7 @@ class Curl{
     }
 
     // инициализация параметров для отправки запроса
-    //Yii::app()->params['queue_url_send_data'], $text_id, $check_id, $key_words, $valueField
-    //function __construct($url='', $textID='', $import_var_id ='', $type_check='', $key_words='', $text=''){
-    function __construct($url='', $textID='', $type_check='',$key_words='', $text='', $import_var_id =''){
+    function __construct($url='', $textID='', $import_var_id ='', $type_check='', $key_words='', $text=''){
 
         // если не передали URL напрямую смотрим в гллобальных настройках
         if(empty($url)){
@@ -52,21 +50,13 @@ class Curl{
                 $url = Yii::app()->params['cheking_url'];
             }
         }
-
-        // проверка на заполнение всех параметров для формирования полноценног json запроса
-//        Curl::is_empty($url, 'URL адрес для отправки запроса ');
-//        Curl::is_empty($textID, 'ID задания ');
-//        Curl::is_empty($import_var_id, 'ID поля из задания ');
-//        Curl::is_empty($type_check, 'Тип проверки ');
-//        Curl::is_empty($key_words, 'Ключевые слова ');
-//        Curl::is_empty($type_check, 'Тип проверки ');
         // инициализация переменных класса, для формирования массива на отправку
         $this->url = $url;
         $this->text_id = $textID;
         $this->field_id = $import_var_id;
         $this->type_check = $type_check;
-        $this->key_words = base64_encode($key_words);
-        $this->text = base64_encode($text);
+        $this->key_words = $key_words;
+        $this->text = $text;
     }
 
     /*
@@ -79,8 +69,6 @@ class Curl{
             if(empty($array_data)){
                 $array_data = $this->create_data();
             }
-            //file_put_contents(time().'.txt',json_encode($array_data));
-
 
             //уcтанавливаем урл, к которому обратимся
             curl_setopt($curl, CURLOPT_URL, $this->url);
@@ -96,43 +84,18 @@ class Curl{
             curl_setopt($curl, CURLOPT_USERAGENT, 'Opera 10.00');
             $res = curl_exec($curl);
 
-            //file_put_contents(time().'_data.txt',json_encode($array_data));
-
             //проверяем, если ошибка, то получаем номер и сообщение
             if(!$res){
                 $result = curl_error($curl).'('.curl_errno($curl).')';
-                //return $result;
             }else{
                 $result = json_decode($res, true);
             }
 
-//            if(!empty($result)){
-//                foreach($result as $k=>$data){
-//                    file_put_contents(time().'_'.$k.'.txt',$data);
-//                }
-//            }
-            //die();
-//                //если не ошибка, то выводим результат
-//            else{
-//                die('Error in curl request:'.$res);
-//            }
-
             curl_close($curl);
-
-            // если необходимо записать в лог ошибок, полученную ошибку, то ЗАПИШИМ!
-//            if($this->write_log && $result['result']=='fail'){
-//                $log = new LogCheking();
-//                $log->text_id = $this->text_id;
-//                $log->import_var_id = $this->field_id;
-//                $log->import_var_value = $this->$this->text;
-//                $log->error = $result['errorcode'];
-//                $log->check_id = $this->type_check;
-//                $log->save();
-//            }
 
             return $result;
         }else{
-			//Возможно CURL не установлен на сервере
+            die('Возможно CURL не установлен на сервере');
         }
     }
 

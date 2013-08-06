@@ -30,7 +30,7 @@ class DescriptionTemplate extends CActiveRecord
 			//array('category_id, title, title_job, type_job, description, deadline, price_th, uniqueness', 'required'),
             //
             array('title,category_id', 'required'),
-			array('category_id,  price_th, uniqueness', 'numerical', 'integerOnly'=>true),
+			array('deadline, category_id,  price_th, uniqueness', 'numerical', 'integerOnly'=>true),
 			array('title, title_job, type_job', 'length', 'max'=>255),
             array('description','length', 'max'=>6000),
 
@@ -135,10 +135,7 @@ class DescriptionTemplate extends CActiveRecord
     protected function afterFind(){
         //10/06/2012
         parent::afterFind();
-
-        if(!empty($this->deadline)){
-            $this->deadline = date('d/m/Y',$this->deadline);
-        }
+        $this->deadline = date('d/m/Y',$this->deadline);
     }
 
     public function onBeforeValidate($event) {
@@ -147,16 +144,5 @@ class DescriptionTemplate extends CActiveRecord
         }
     }
 
-    /*
-     * находим шаблон по его ID
-     */
-    static function getByID($id){
-        $sql = 'SELECT *
-                FROM {{description_template}}
-                WHERE id="'.$id.'"';
-        $result = Yii::app()->db->createCommand($sql)->queryRow();
-
-        return $result;
-    }
 
 }

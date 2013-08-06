@@ -10,9 +10,6 @@
  */
 Yii::import('bootstrap.widgets.TbButtonColumn');
 
-/**
- * @property TbJsonGridView $grid
- */
 class TbJsonButtonColumn extends TbButtonColumn
 {
 	/**
@@ -20,27 +17,27 @@ class TbJsonButtonColumn extends TbButtonColumn
 	 */
 	public function renderHeaderCell()
 	{
-		if ($this->grid->json) {
+		if($this->grid->json)
+		{
 			ob_start();
 			$this->renderHeaderCellContent();
 			$content = ob_get_contents();
 			ob_end_clean();
 
-			return array('id' => $this->id, 'content' => $content);
+			return array('id'=>$this->id, 'content'=>$content);
 		}
 		parent::renderHeaderCell();
 	}
 
 	/**
 	 * Renders|returns the data cell
-	 *
 	 * @param int $row
-	 *
 	 * @return array|void
 	 */
 	public function renderDataCell($row)
 	{
-		if ($this->grid->json) {
+		if($this->grid->json)
+		{
 			$data = $this->grid->dataProvider->data[$row];
 			$col = array();
 			ob_start();
@@ -63,9 +60,7 @@ class TbJsonButtonColumn extends TbButtonColumn
 		/**
 		 * add custom with msgbox instead
 		 */
-		$this->buttons['delete']['click'] = strtr(
-			$this->buttons['delete']['click'],
-			array('yiiGridView' => 'yiiJsonGridView')
-		);
+		$this->buttons['delete']['click'] = strtr($this->buttons['delete']['click'],array('yiiGridView'=>'yiiJsonGridView'));
+
 	}
 }

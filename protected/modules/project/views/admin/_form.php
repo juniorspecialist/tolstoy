@@ -41,7 +41,6 @@
                         'ajax' => array(
                             'type'=>'POST', //request type
                             'dataType'=>'json',
-                            'data' => 'js:"UseTemplate="+this.value',
                             'url'=>CController::createUrl('selecttemplate'), //url to call.
                             'success'=>'function(data) {
                                  //$("#Project_category_id").html(data.category_id);
@@ -49,7 +48,6 @@
                                  $("#Project_title").val(data.title);
                                  $("#Project_type_job").val(data.type_job);
                                  $("#Project_description").html(data.description);
-                                 // если указана дата в шаблоне, тогда установим из шаблона иначе - текущую
                                  $("#Project_deadline").val(data.deadline);
                                  $("#Project_price_th").val(data.price_th);
                                  $("#Project_uniqueness").val(data.uniqueness);
@@ -190,10 +188,10 @@
         <?php echo $form->checkBox($model,'check_editor'); ?>
         <?php echo $form->label($model,'check_editor', array('style'=>'width:350px;')); ?>
     </div>
-<!--    <div class="row">-->
-        <?php //echo $form->checkBox($model,'check_copywriter'); ?>
-        <?php //echo $form->label($model,'check_copywriter', array('style'=>'width:350px;')); ?>
-<!--    </div>-->
+    <div class="row">
+        <?php echo $form->checkBox($model,'check_copywriter'); ?>
+        <?php echo $form->label($model,'check_copywriter', array('style'=>'width:350px;')); ?>
+    </div>
 
     <div class="row buttons">
    		<?php //echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save');

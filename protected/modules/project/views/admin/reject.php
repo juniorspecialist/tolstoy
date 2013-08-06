@@ -9,7 +9,7 @@
     if(Yii::app()->user->hasFlash('reject')): ?>
         <div class="flash-success">
             <script type="text/javascript">
-                window.history.back();
+                location.reload();
                 alert("Успешно отклонили");
             </script>
         </div>
@@ -26,7 +26,7 @@
         <div class="row" >
             <?php
             echo CHtml::label('Тип ошибки:', 'error_type');
-            echo CHtml::listBox('type_error', (isset($_POST['type_error']))?$_POST['type_error']:'' , Errors::getListErrors(), array('size'=>1));
+            echo CHtml::listBox('type_error',$_POST['type_error'] , Errors::getListErrors(), array('size'=>1));
             ?>
         </div>
         <div class="row">
@@ -49,10 +49,10 @@
             );
             ?>
             <?php $this->widget('bootstrap.widgets.TbButton', array(
-                'label'=>'Закрыть',
-                'url'=>'#',
-                'htmlOptions'=>array('data-dismiss'=>'modal'),
-            )); ?>
+            'label'=>'Закрыть',
+            'url'=>'#',
+            'htmlOptions'=>array('data-dismiss'=>'modal'),
+        )); ?>
         </div>
         <?php $this->endWidget(); ?>
     </div><!-- form -->

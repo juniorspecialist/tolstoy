@@ -37,10 +37,10 @@ if($model->status==Project::TASK_CHEKING_ADMIN){
         array( // ajaxOptions
             'type' =>'POST',
             'beforeSend' => "function(request){
-            }",
+         }",
             'success' => "function( data ){
-                alert(data);
-            }",
+            alert(data);
+        }",
             'data' =>'project='.$model->id,
         ),
         array( //htmlOptions
@@ -56,22 +56,17 @@ if($model->status==Project::TASK_CHEKING_ADMIN){
 
 echo CHtml::link('Перейти к редактору текстов', '/project/admin/textlist/id/'.$model->id, array('style'=>'margin-left:20px;'));
 
-// виджет - форма со всплывающим окном для добавления комментария к проекту
-$this->widget('application.components.comment.CommentLinkWidget', array('model'=>get_class($model), 'model_id'=>$model->id));
+$this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'myModal')); ?>
 
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h4>Отправка личного сообщения:</h4>
+</div>
 
-//$this->beginWidget('bootstrap.widgets.TbModal', array('id'=>'myModal')); ?>
-<!--    <div class="modal-header">-->
-<!--        <a class="close" data-dismiss="modal">×</a>-->
-<!--        <h4>Отправка личного сообщения:</h4>-->
-<!--    </div>-->
-<!--    <div class="modal-body">-->
-<!--        --><?php //$this->renderPartial('msg', array('msg'=>$msg, 'model'=>$model)); ?>
-<!--    </div>-->
-<?php
-//$this->endWidget();
-
-$this->widget('application.components.msg.MessagesWidget',  array('model'=>get_class($model), 'model_id'=>$model->id));
+<div class="modal-body">
+    <?php $this->renderPartial('msg', array('msg'=>$msg, 'model'=>$model)); ?>
+</div>
+<?php $this->endWidget();
 
 echo CHtml::link('Отклонить проект',
     '#',
@@ -114,10 +109,7 @@ echo CHtml::link("Скачать ключевые слова проекта",
     )
 
 );
-
-//отображаем комментарии по проекту -
-$this->widget('application.components.comment.CommentsWidget',array('model_id'=>$model->id, 'model'=>get_class($model)));
-
+$this->widget('CommentsWidget',array('model_id'=>$model->id, 'model'=>get_class($model)));
 // отображаем ссылку для отклонения до момента принятия задания редактором
 if(Project::getStatusInDB($model->id)<Project::TASK_AGREE_ADMIN){
     $this->widget('ErrorsWidget',array('model_id'=>$model->id, 'model'=>get_class($model)));

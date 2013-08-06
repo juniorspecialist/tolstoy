@@ -11,11 +11,7 @@
 <?php  if(Yii::app()->user->hasFlash('msg')): ?>
 
 <div class="flash-success">
-    <?php //echo Yii::app()->user->getFlash('msg'); ?>
-    <script type="text/javascript">
-        location.reload();
-        alert("Успешно отправили сообщение");
-    </script>
+    <?php echo Yii::app()->user->getFlash('msg'); ?>
 </div>
 <?php endif; ?>
 <?php //else: ?>

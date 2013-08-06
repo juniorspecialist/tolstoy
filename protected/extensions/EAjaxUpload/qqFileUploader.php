@@ -142,52 +142,30 @@ class qqFileUploader {
 
         if ($this->file->save($uploadDirectory . $filename . '.' . $ext)){
 
+            //file_put_contents('save.txt',$uploadDirectory . $filename . '.' . $ext);
 
             $content = file_get_contents($uploadDirectory . $filename . '.' . $ext);
             // parse CSV
             $csv = new CsvImport($uploadDirectory . $filename . '.' . $ext);
-            $listColums_all = $csv->getColumnLema();
-            $listColums = $listColums_all[0];// список заголовков столбцов
-            $list_data = $listColums_all[1];// данные первого столбца из файла импорта
-
-
+            $listColums = $csv->getColumnLema();
             $filels = '';
-            $div_checks = '<div style="width: 50%;  padding-left: 543px;">';
-            $div_checks.= 'Отметить все'.CHtml::CheckBox('visibleall', false, array('id'=>'visible','style'=>'margin-right:75px;','onclick'=>'js:if($(this).is(":checked")){$(".visible").attr("checked", true)}else{$(".visible").attr("checked", false)}')).'';
-            $div_checks.='Отметить все'.CHtml::CheckBox('edit_all', false, array('id'=>'edit','style'=>'margin-right:30px;','onclick'=>'js:if($(this).is(":checked")){$(".edit").attr("checked", true)}else{$(".edit").attr("checked", false)}')).'';
-            $div_checks.='Отметить все'.CHtml::CheckBox('wiziwig_all', false, array('id'=>'wiziwig','onclick'=>'js:if($(this).is(":checked")){$(".wiziwig").attr("checked", true)}else{$(".wiziwig").attr("checked", false)}')).'';
-            $div_checks.= '</div>';
-            $filels = $div_checks;
-
             $varsList = CHtml::listData(ImportVars::model()->findAll(), 'id', 'title');
             // получаем список проверок и формируем по ним список чекбоксов
             $chekingList = CheckingImportVars::getChekingList();
             foreach($listColums as $index=>$column){
-
-
-                if(empty($list_data[$index])){
-                    $checked = false;
-                    $chekingList_ = true;
-                    $visible = false;
-                }else{
-                    $checked = true;
-                    $visible = true;
-                    $chekingList_ = false;
-                }
-
 
                 //$shema = new ImportVarsShema();
                 $select = CHtml::dropDownList('ImportVarsShema['.$index.']','',$varsList);
                 $hidden = CHtml::hiddenField('label['.$index.']', $column);
 
                 // галочка для конкретного поля для редактирования, отображения и испольование редактора-ВИЗИ
-                $checkBox1 = '        Отображаемый столбец'.CHtml::CheckBox('visible['.$index.']',$visible, array('class'=>'visible'));
-                $checkBox2 = '        Редактируемый столбец'.CHtml::CheckBox('edit['.$index.']',$checked, array('class'=>'edit'));
-                $checkBox3 = '        Визивиг редактор'.CHtml::CheckBox('wysiwyg['.$index.']',$checked, array('class'=>'wiziwig'));
+                $checkBox1 = '        Отображаемый столбец'.CHtml::CheckBox('visible['.$index.']',true);
+                $checkBox2 = '        Редактируемый столбец'.CHtml::CheckBox('edit['.$index.']',true);
+                $checkBox3 = '        Визивиг редактор'.CHtml::CheckBox('wysiwyg['.$index.']',true);
 
 
                 $checkBox = $checkBox1. $checkBox2. $checkBox3;
-                $forma = CheckingImportVars::getFormChekingByField('', '', $index, $column, $chekingList, $chekingList_);
+                $forma = CheckingImportVars::getFormChekingByField('','',$index,$column,$chekingList);
 
                 $row = '<div class="row"><label for="'.$column.'">Столбец('.$column.')</label>'.$select.$hidden.$checkBox.$forma.'</div>';
 
@@ -199,7 +177,7 @@ class qqFileUploader {
 
             return array('success'=>true,'filename'=>$filels);
         } else {
-
+            //file_put_contents('not_save.txt',$uploadDirectory . $filename . '.' . $ext);
             return array('error'=> 'Could not save uploaded file.' .
                 'The upload was cancelled, or server error encountered');
         }

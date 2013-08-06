@@ -72,10 +72,9 @@ class TemplateController extends Controller{
 
             // преобразование даты из формата 30/11/2012 в UNIXTIME
             if(!empty($_POST['DescriptionTemplate']['deadline']) && $_POST['DescriptionTemplate']['deadline']!=0){
-               $parse_date = explode('/',$_POST['DescriptionTemplate']['deadline']);
-               $model->deadline = mktime(0, 0, 0,  $parse_date[1],$parse_date[0], intval($parse_date[2]));
+//               $parse_date = explode('/',$_POST['DescriptionTemplate']['deadline']);
+//               $model->deadline = mktime(0, 0, 0,  $parse_date[1],$parse_date[0], intval($parse_date[2]));
             }
-
 
    			if($model->validate()){
 
@@ -157,7 +156,7 @@ class TemplateController extends Controller{
         Yii::import("ext.EAjaxUpload.qqFileUploader");
 
         $folder=Yii::getPathOfAlias('webroot.upload').'/';// folder for uploaded files
-
+        //file_put_contents('1.txt',$folder);
         $allowedExtensions = array("csv");//array("jpg","jpeg","gif","exe","mov" and etc...
         $sizeLimit = 7 * 1024 * 1024;// maximum file size in bytes
         $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);

@@ -35,12 +35,12 @@
 if($model->status==Project::TASK_CHEKING_REDACTOR){
     echo CHtml::ajaxLink(
         "Принять проект",
-        Yii::app()->createUrl('project/redactor/agree' ),
+        Yii::app()->createUrl( 'project/redactor/agree' ),
         array( // ajaxOptions
             'type' =>'POST',
             'beforeSend' => "function(request){
-        }",
-            'success' => "function(data){
+         }",
+            'success' => "function( data ){
             alert(data);
         }",
             'data' =>'project='.$model->id,

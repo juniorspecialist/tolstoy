@@ -1,4 +1,16 @@
 <?php
+
+/**
+ * This is the model class for table "{{messages}}".
+ *
+ * The followings are the available columns in table '{{messages}}':
+ * @property integer $id
+ * @property integer $author_id
+ * @property integer $create
+ * @property string $model
+ * @property integer $model_id
+ * @property string $msg_text
+ */
 class Messages extends CActiveRecord
 {
 	/**
@@ -29,10 +41,7 @@ class Messages extends CActiveRecord
 		return array(
 			array('author_id, create, model, model_id, msg_text,recipient_id', 'required'),
 			array('author_id, create, model_id, is_new, recipient_id', 'numerical', 'integerOnly'=>true),
-            array('is_new', 'default', 'value'=>1),
 			array('model', 'length', 'max'=>255),
-            array('create', 'default', 'value'=>time()),
-            array('author_id', 'default', 'value'=>Yii::app()->user->id),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, author_id, create, model, model_id, msg_text, is_new', 'safe', 'on'=>'search'),
@@ -120,39 +129,4 @@ class Messages extends CActiveRecord
         if(empty($this->author_id)){ $this->author_id = Yii::app()->user->id; }
     }
 
-
-    /*
-     * находим кол-во НОВЫХ сообщений для пользователя
-     */
-    static function counNewMsg(){
-        $sql = 'SELECT COUNT(id) as count FROM {{messages}} WHERE recipient_id="'.Yii::app()->user->id.'" AND is_new="1"';
-        $result = Yii::app()->db->createCommand($sql)->queryRow();
-
-        return $result['count'];
-    }
-    /*
-     * выделяем новые сообщения в таблице сообщений
-     */
-    static function getClassTbl($is_new){
-
-        if($is_new==1){
-            return 'new_msg';
-        }else{
-            return 'old_msg';
-        }
-    }
-
-    /*
-     * кнопка для отправки личного сообщения из диалогового окна
-     */
-    public function getLinkToForm(){
-        return CHtml::ajaxSubmitButton('Отправить',
-            Yii::app()->createUrl('ajax/message'),
-            array(
-                'type' => 'POST',
-                'success'=>'js:function(data){ $("div.form-messages").html(data); }',
-            ),
-            array('class'=>'btn btn-primary')
-        );
-    }
 }

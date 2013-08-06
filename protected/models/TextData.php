@@ -91,43 +91,18 @@ class TextData extends CActiveRecord
 	}
 
     /*
-     * получаем список сведений через разделитель
-     * по заданию
-     */
-    static function getIntelligenceByComa($text_id){
-        $sql = 'SELECT import_var_value FROM {{text_data}} WHERE text_id="'.$text_id.'" AND import_var_id="'.Yii::app()->params['reduction'].'"';
-        $array = Yii::app()->db->createCommand($sql)->queryAll();
-
-        $result = '';
-        foreach($array as $i=>$row){
-            if($i==(sizeof($array)-1)){
-                $result.=$row['import_var_value'];
-            }else{
-                $result.=$row['import_var_value'].'\n';
-            }
-        }
-
-        return $result;
-    }
-
-    /*
      *  получаем список ключевиков по заданию, с разделителем запятая
      * $text_id - ID задания
-     * $getIntelligence - признак нужны нам ли ключевики или сведения по заданию
      */
     static function getKeyWordsByComa($text_id){
-
-        // выбираем все ключевики по заданию и формируем строку, через разделитель ЗАПЯТАЯ
         $sql = 'SELECT import_var_value FROM {{text_data}} WHERE text_id="'.$text_id.'" AND import_var_id="'.Yii::app()->params['key_words'].'"';
         $array = Yii::app()->db->createCommand($sql)->queryAll();
-
-
         $result = '';
         foreach($array as $i=>$row){
             if($i==(sizeof($array)-1)){
                 $result.=$row['import_var_value'];
             }else{
-                $result.=$row['import_var_value'].'\n';
+                $result.=$row['import_var_value'].',';
             }
         }
 

@@ -1,16 +1,16 @@
 <?php
-/*## TbProgress class file.
- *
+/**
+ * TbProgress class file.
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @copyright Copyright &copy; Christoffer Niska 2011-
- * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php) 
+ * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @package bootstrap.widgets
  * @since 0.9.10
  */
 
 /**
  * Bootstrap progress bar widget.
- * @see <http://twitter.github.com/bootstrap/components.html#progress>
+ * @see http://twitter.github.com/bootstrap/components.html#progress
  */
 class TbProgress extends CWidget
 {
@@ -28,26 +28,18 @@ class TbProgress extends CWidget
 	 * @var boolean indicates whether the bar is striped.
 	 */
 	public $striped = false;
-
 	/**
 	 * @var boolean indicates whether the bar is animated.
 	 */
 	public $animated = false;
-
 	/**
 	 * @var integer the amount of progress in percent.
 	 */
 	public $percent = 0;
-
 	/**
 	 * @var array the HTML attributes for the widget container.
 	 */
 	public $htmlOptions = array();
-
-	/**
-	 * @var string div content
-	 */
-	public $content;
 
 	/**
 	 * @var array $stacked set to an array of progress bar values to display stacked progress bars
@@ -62,46 +54,41 @@ class TbProgress extends CWidget
 	public $stacked;
 
 	/**
-	 *### .init()
-	 *
 	 * Initializes the widget.
 	 */
 	public function init()
 	{
 		$classes = array('progress');
-		if (empty($this->stacked)) {
+		if(empty($this->stacked))
+		{
 			$validTypes = array(self::TYPE_INFO, self::TYPE_SUCCESS, self::TYPE_WARNING, self::TYPE_DANGER);
 
-			if (isset($this->type) && in_array($this->type, $validTypes)) {
-				$classes[] = 'progress-' . $this->type;
-			}
-			if ($this->striped) {
-				$classes[] = 'progress-striped';
-			}
-			if ($this->animated) {
-				$classes[] = 'active';
-			}
+			if (isset($this->type) && in_array($this->type, $validTypes))
+				$classes[] = 'progress-'.$this->type;
 
-			if ($this->percent < 0) {
+			if ($this->striped)
+				$classes[] = 'progress-striped';
+
+			if ($this->animated)
+				$classes[] = 'active';
+
+			if ($this->percent < 0)
 				$this->percent = 0;
-			} else if ($this->percent > 100) {
+			else if ($this->percent > 100)
 				$this->percent = 100;
-			}
 		}
 
-		if (!empty($classes)) {
+		if (!empty($classes))
+		{
 			$classes = implode(' ', $classes);
-			if (isset($this->htmlOptions['class'])) {
-				$this->htmlOptions['class'] .= ' ' . $classes;
-			} else {
+			if (isset($this->htmlOptions['class']))
+				$this->htmlOptions['class'] .= ' '.$classes;
+			else
 				$this->htmlOptions['class'] = $classes;
-			}
 		}
 	}
 
 	/**
-	 *### .run()
-	 *
 	 * Runs the widget.
 	 * @since  9/21/12 8:13 PM  antonio ramirez <antonio@clevertech.biz>
 	 * Updated to use stacked progress bars
@@ -109,26 +96,18 @@ class TbProgress extends CWidget
 	public function run()
 	{
 		echo CHtml::openTag('div', $this->htmlOptions);
-		if (empty($this->stacked)) {
-			echo '<div class="bar" style="width: ' . $this->percent . '%;">' . $this->content . '</div>';
-		} elseif (is_array($this->stacked)) {
-			foreach ($this->stacked as $bar) {
-				$options = isset($bar['htmlOptions']) ? $bar['htmlOptions'] : array();
-				if (empty($options['style'])) {
-					$options['style'] = '';
-				} else {
-					$options['style'] .= ' ';
-				}
-				$options['style'] .= 'width: ' . $bar['percent'] . '%';
-
-				if (empty($options['class'])) {
-					$options['class'] = '';
-				} else {
-					$options['style'] .= ' ';
-				}
-				$options['class'] .= 'bar bar-' . $bar['type'];
-
-				echo '<div ' . CHtml::renderAttributes($options) . '>' . @$bar['content'] . '</div>';
+		if(empty($this->stacked))
+		{
+			echo '<div class="bar" style="width: '.$this->percent.'%;"></div>';
+		}
+		elseif (is_array($this->stacked))
+		{
+			foreach($this->stacked as $bar)
+			{
+				$options = isset($bar['htmlOptions'])? $bar['htmlOptions'] : array();
+				$options['style'] = 'width: ' . $bar['percent']. '%';
+				$options['class'] = 'bar bar-'.$bar['type'];
+				echo '<div '.CHtml::renderAttributes($options).'></div>';
 			}
 		}
 		echo '</div>';

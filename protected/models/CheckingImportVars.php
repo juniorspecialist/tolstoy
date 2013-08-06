@@ -123,7 +123,7 @@ class CheckingImportVars extends CActiveRecord
      * $type - тип т.е. для проекта эта запись или для шаблона эта настройка
      * $modelID - ID записи в моделе(ID проекта либо ID шаблона, если ID пустой, значит данных нет по полю - НОВЫЙ список)
      */
-    public static function getFormChekingByField($type='',$modelID='',$importVarId='',$column='',$chekingList, $isSelected = ''){
+    public static function getFormChekingByField($type='',$modelID='',$importVarId='',$column='',$chekingList){
         if(!empty($modelID) && !empty($type)){
             // проверка на существование уже выбранных позиций(выбранных галочек) по нкжному полю-столбцу
             $sql = 'SELECT *
@@ -154,8 +154,8 @@ class CheckingImportVars extends CActiveRecord
             // формируем форму диалогового окна
             $id = uniqid();
             $link = CHtml::link('Проверки', '#', array('class'=>$id, 'style'=>'margin-left:20px;', 'data-toggle'=>'modal', 'data-target'=>'#'.$id));//,'onclick'=>'js:$("#'.$id.'").show();'
-            $linkSelectAll = CHtml::link('Отметить все', 'javascript:void(0)', array('onclick'=>'js:$("div#'.$id.' input").attr("checked", true);'));
-            $linkDeSelectAll = CHtml::link('Снять выделение', 'javascript:void(0)', array('style'=>'margin-left:40px;' ,'onclick'=>'js:$("div#'.$id.' input").attr("checked", false);'));
+            $linkSelectAll = CHtml::link('Отметить все', '#', array('onclick'=>'js:$("div#'.$id.' input").attr("checked", true);'));
+            $linkDeSelectAll = CHtml::link('Снять выделение', '#', array('style'=>'margin-left:40px;' ,'onclick'=>'js:$("div#'.$id.' input").attr("checked", false);'));
 
 
             $forma = '<div id="'.$id.'" class="modal fade">
@@ -175,23 +175,15 @@ class CheckingImportVars extends CActiveRecord
             $id = uniqid();
 
             $checkboxListForm = '';
-
-            //установили, что необходимо выбрать галочками проверку, то установим
-            if(!empty($isSelected)){
-                $selected_check = $isSelected;
-            }else{
-                $selected_check = false;
-            }
-
             foreach($chekingList as $box){//
-                $checkboxListForm.=CHtml::checkBox('ChekingVarID['.$importVarId.']['.$box['id'].']',$selected_check, array('class'=>$id)).$box['title'].'<br>';
+                $checkboxListForm.=CHtml::checkBox('ChekingVarID['.$importVarId.']['.$box['id'].']',true, array('class'=>$id)).$box['title'].'<br>';
             }
 
 
             $link = CHtml::link('Проверки', '#', array('class'=>$id,'style'=>'margin-left:20px;','data-toggle'=>'modal', 'data-target'=>'#'.$id));//,'onclick'=>'js:$("#'.$id.'").show();'
 
-            $linkSelectAll = CHtml::link('Отметить все', 'javascript:void(0)', array('onclick'=>'js:$("div#'.$id.' input").attr("checked", true);'));
-            $linkDeSelectAll = CHtml::link('Снять выделение', 'javascript:void(0)', array('style'=>'margin-left:40px;' ,'onclick'=>'js:$("div#'.$id.' input").attr("checked", false);'));
+            $linkSelectAll = CHtml::link('Отметить все', '#', array('onclick'=>'js:$("div#'.$id.' input").attr("checked", true);'));
+            $linkDeSelectAll = CHtml::link('Снять выделение', '#', array('style'=>'margin-left:40px;' ,'onclick'=>'js:$("div#'.$id.' input").attr("checked", false);'));
 
             $forma = '<div id="'.$id.'" class="modal fade">
                         <div class="modal-header"><a class="close" data-dismiss="modal">×</a>

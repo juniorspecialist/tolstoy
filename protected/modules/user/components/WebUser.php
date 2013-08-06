@@ -5,18 +5,9 @@ class WebUser extends CWebUser
 
     public function getRole()
     {
-        if(!Yii::app()->user->isGuest){
-//            $user = User::model()->findByPk(Yii::app()->user->id);
-//            if($user!=null){
-//                return $user->role;
-//            }else{
-                return $this->getState('__role') ? $this->getState('__role') : 0;
-            //}
-        }
-        //$model = $this->model(Yii::app()->user->id);
-        return  0;
+        $model = $this->model(Yii::app()->user->id);
 
-        //return $model->role;
+        return $model->role;
 
         //return $this->getState('__role');
     }

@@ -9,7 +9,7 @@
 ?>
 <div class="form-comments">
 
-<?php  if(Yii::app()->user->hasFlash('msg')): ?>
+        <?php  if(Yii::app()->user->hasFlash('msg')): ?>
 <div class="flash-success">
     <?php echo Yii::app()->user->getFlash('msg'); ?>
     <script type="text/javascript">
@@ -28,12 +28,10 @@
 </div>
 <?php endif; ?>
 
-        <?php
-        $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-            'id'=>'comments-form',
-        'enableAjaxValidation'=>false,
-        ));
-        ?>
+        <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+    'id'=>'comments-form',
+    'enableAjaxValidation'=>false,
+)); ?>
 
         <?php //echo $form->errorSummary($model); ?>
 

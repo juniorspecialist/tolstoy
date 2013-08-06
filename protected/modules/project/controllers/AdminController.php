@@ -118,17 +118,38 @@ class AdminController extends Controller{
     }
 
    	public function actionView($id){
-
            // модель самого проекта
            $model = $this->loadModel($id);
+           // модель личных сообщений
+           $msg = new Messages();
+           // заполняем нужными данными, для отправки сообщения
+           $msg->author_id = Yii::app()->user->id;
+           $msg->model = get_class($model);// к какой моделе подвязано сообщение
+           $msg->model_id = $model->id;
+           $msg->is_new = 1;
            //-------------------------------------------------------------
            // причина отклоения проекта
            $reject = new RejectProject();
            $reject->model_id = $model->id;
            $reject->model = get_class($model);// к какой моделе подвязано
+           //-------------------------------------------------------------
+           $this->performAjaxValidation($msg);
 
+           if(isset($_POST['Messages'])){
+               $msg->attributes=$_POST['Messages'];
+               $msg->create = time();
+               if($msg->validate()){
+                   $msg->save();
+                   Yii::app()->user->setFlash('msg','Спасибо, ваше сообщение успешно отправлено');
+                   $this->renderPartial('msg', array('msg'=>new Messages(), 'model'=>$model));
+                   Yii::app()->end();
+               }else{
+                   $this->renderPartial('msg', array('msg'=>$msg, 'model'=>$model));
+                   Yii::app()->end();
+               }
+           }
 
-           $this->render('view', array('model'=>$model, 'reject'=>$reject));
+           $this->render('view', array('model'=>$model, 'msg'=>$msg, 'reject'=>$reject));
    	}
 
     /*
@@ -136,19 +157,6 @@ class AdminController extends Controller{
      * $id - ID текста в таблице
      */
     public function actionText($id){
-
-        // принимаем задание или отклоняем задание(АДМИН проекта)
-        if(isset($_POST['action'])){
-            //задание принимает АДМИН
-            if($_POST['action']=='accept_text'){
-                $text = Text::model()->findByPk($_POST['project_id']);
-                $text->status = Text::TEXT_ACCEPT_ADMIN;
-                $text->save();
-                //$this->redirect('/project/admin/textlist/', array('id'=>$model->project_id));
-                echo Yii::app()->createUrl('/project/admin/textlist/', array('id'=>$text->project_id));
-                Yii::app()->end();
-            }
-        }
 
         // отправили AJAX запрос на добавление нового ключевика по тексту -
         if(Yii::app()->request->isAjaxRequest){
@@ -174,7 +182,12 @@ class AdminController extends Controller{
         $model = $this->loadModelText($id);
 
         // sql-запрос на выборку полей с данными для выбранного текста
-        $data = $model->viewText(false);
+        $sql = 'SELECT {{text_data}}.id, {{text_data}}.import_var_value, {{import_vars}}.title,{{text_data}}.import_var_id
+                FROM {{text_data}},{{import_vars}}
+                WHERE {{text_data}}.text_id='.$id.'
+                    AND {{import_vars}}.id={{text_data}}.import_var_id';
+
+        $data = Yii::app()->db->createCommand($sql)->queryAll();
 
         //-------------------------------------------------------------
         // причина отклоения проекта
@@ -182,6 +195,7 @@ class AdminController extends Controller{
         $reject->model_id = $model->id;
         $reject->model = get_class($model);// к какой моделе подвязано
         //-------------------------------------------------------------
+
         // отправили POST на обновление данных по данному тексту
         if(isset($_POST['Text'])){
             $model->attributes = $_POST['Text'];
@@ -243,10 +257,7 @@ class AdminController extends Controller{
 
                 // находим схему полей соотвествия для импортируемого файла
                 $shems = ImportVarsShema::getListFieldsByIdShema($model->UseTemplate, ImportVarsShema::SHEMA_TYPE_TEMPLATE);
-                if(!empty($model->deadline)){
-                    $parse_date = explode('/',$_POST['Project']['deadline']);
-                    $model->deadline = mktime(0, 0, 0,  $parse_date[1],$parse_date[0], intval($parse_date[2]));
-                }
+
                 if($model->save()){
 
                     // решили распарсить файл на поля соотвествий и записать значения соотвествющим полям
@@ -299,17 +310,15 @@ class AdminController extends Controller{
 
         $data = array();
 
-        if(isset($_POST['UseTemplate'])){
-
-            $data = DescriptionTemplate::getByID($_POST['UseTemplate']);
-
-            if(empty($data['deadline'])){
-                // установим текущую дату
-                $data['deadline']= date('d/m/Y', time());
-            }else{
-                $data['deadline']= date('d/m/Y',$data['deadline']);
-            }
-
+        if(!empty($_POST['Project']['UseTemplate'])){
+            $template = DescriptionTemplate::model()->findByPk($_POST['Project']['UseTemplate']);
+            $data['category_id']= $template->category_id;
+            $data['type_job']= $template->type_job;
+            $data['description']= $template->description;
+            $data['deadline']= $template->deadline;
+            $data['price_th']= $template->price_th;
+            $data['uniqueness']= $template->uniqueness;
+            $data['title'] = $template->title_job;
         }
         // return data (JSON formatted)
         echo CJSON::encode($data);
@@ -327,7 +336,6 @@ class AdminController extends Controller{
 
    		if(isset($_POST['Project'])){
 
-            //echo '<pre>'; print_r($_POST); die();
             // получаем список проверок
             $listCheking = CheckingImportVars::getChekingList();
 
@@ -356,60 +364,45 @@ class AdminController extends Controller{
                    //$shema->import_var_id = $shemVar;
 
                    // галочки по полям
-                   if(isset($_POST['edit'][$cnt])){
-                       if($_POST['edit'][$cnt]==1){
-                           $shema->edit = 1;
-                       }else{
-                           $shema->edit = 0;
-                       }
+                   if($_POST['edit'][$cnt]==1){
+                        $shema->edit = 1;
                    }else{
                        $shema->edit = 0;
                    }
 
-                   if(isset($_POST['visible'][$cnt])){
-                       if($_POST['visible'][$cnt]==1){
-                           $shema->visible = 1;
-                       }else{
-                           $shema->visible = 0;
-                       }
+                   if($_POST['visible'][$cnt]==1){
+                        $shema->visible = 1;
                    }else{
                        $shema->visible = 0;
                    }
 
-                   if(isset($_POST['wysiwyg'][$cnt])){
-                       if($_POST['wysiwyg'][$cnt]==1){
-                           $shema->wysiwyg = 1;
-                       }else{
-                           $shema->wysiwyg = 0;
-                       }
+                   if($_POST['wysiwyg'][$cnt]==1){
+                        $shema->wysiwyg = 1;
                    }else{
                        $shema->wysiwyg = 0;
                    }
 
                    $shema->save();
 
-                   // массив проверок поо полю
-                   if(isset($_POST['ChekingVarID'][$i])){
-                       // обновление списка проверок по каждому полю из импортируемой схемы// сохраняем список проверок по полю
-                       $rowCheking = $_POST['ChekingVarID'][$i];
-                       for($k=0;$k<count($listCheking);$k++){
+                   // обновление списка проверок по каждому полю из импортируемой схемы// сохраняем список проверок по полю
+                   $rowCheking = $_POST['ChekingVarID'][$i];// массив проверок поо полю
+                   for($k=0;$k<count($listCheking);$k++){
 
-                           $row = $listCheking[$k];
+                       $row = $listCheking[$k];
 
-                           // если выбрали галочкой проверку
-                           if($rowCheking[$k+1]==1){//$k+1 - для корректности выбора по галочкам
-                               $selected = 1;
-                           }else{
-                               $selected = 0;
-                           }
-                           $sql = 'UPDATE {{checking_import_vars}}
+                       // если выбрали галочкой проверку
+                       if($rowCheking[$k+1]==1){//$k+1 - для корректности выбора по галочкам
+                           $selected = 1;
+                       }else{
+                           $selected = 0;
+                       }
+                       $sql = 'UPDATE {{checking_import_vars}}
                                 SET selected="'.$selected.'"
                                 WHERE checked_id="'.$row['id'].'"
                                     AND import_var_id="'.$i.'"
                                     AND model_id="'.$model->id.'"
                                     AND type="2"';
-                           Yii::app()->db->createCommand($sql)->execute();
-                       }
+                       Yii::app()->db->createCommand($sql)->execute();
                    }
 
                    $cnt++;
@@ -581,11 +574,11 @@ class AdminController extends Controller{
    	}
 
     /*
-     *  принимаем проект - от лица админа проекта
+     *  принимаем проект - от лица редактора
      */
     public function actionAgree(){
         if(Yii::app()->request->isPostRequest){
-            // проверяем может ли админ принять проект, все ли условия выполнены для этого
+            // проверяем может ли редактор принять проект, все ли условия выполнены для этого
             if(Project::canAgreeProject($_POST['project'])){
                 Project::afterChangeDataInProject($_POST['project'], Project::TASK_AGREE_ADMIN,'');
                 echo 'Проект успешно принят администратором';

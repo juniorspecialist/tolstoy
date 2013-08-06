@@ -55,9 +55,8 @@ class CsvImport{
         $arrayFromCsv = $this->get2DArrayFromCsv();
 
         //возращаем массив со структурой столбцов
-        return array('0'=>$arrayFromCsv[0],'1'=>$arrayFromCsv[1]);
+        return $arrayFromCsv[0];
     }
-
 
     /*
      * обработываем файл импорта с ключевиками и заданияем и создаём
