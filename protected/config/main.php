@@ -23,6 +23,7 @@ return array(
 	'import'=>array(
         'application.models.*',
         'application.components.*',
+        'application.components.check.',
 		'application.helpers.*',
         'application.modules.user.models.*',
         'application.modules.user.components.*',
@@ -69,6 +70,26 @@ return array(
 
 	// application components
 	'components'=>array(
+        // компонент для сравнения текстов на уникальность+подготовка их в сравнению на уникальность
+        'shingle' => array(
+            'class' => 'EShinglesComponent',
+            //default value 4
+            'shinglePrice' => 4,
+        ),
+
+        // компонент для проверки текста на уникальность, и для определения на сколько он уникален
+        'uniqueCheck' => array(
+            'class' => 'application.components.check.UniqueComponent',
+            'ya_region'=>225,
+            'behaviors' => array (
+                'curlBehavior' => array(
+                    'class' => 'application.extensions.behaviors.CurlBehavior',
+                    'proxy_login'=>'VIP45241',
+                    'proxy_pass'=>'ONKzYR6Bip',
+                ),
+            ),
+        ),
+
         'user'=>array(
             // enable cookie-based authentication
             'class' => 'WebUser',
