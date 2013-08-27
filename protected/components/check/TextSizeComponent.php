@@ -5,6 +5,20 @@
  * Date: 14.08.13
  * Time: 11:35
  * To change this template use File | Settings | File Templates.
+ *
+ * пример вызова -
+ * $textSize = Yii::app()->textSize;
+$textSize->aberrance = 10;
+$textSize->requirement = 2000;
+$res = $textSize->checkText($text1);
+//die('res='.$res);
+if($res===true){
+echo 'ok';
+}else{
+echo 'error';
+}
+
+ *
  */
 
 /*
@@ -39,7 +53,11 @@ class TextSizeComponent extends CApplicationComponent {
         // определяем длину текста, без пробелов и HTML тегов
         $text = strip_tags($text);
 
-        $sizeText = strlen(preg_replace( '#\s+#', ' ', $text));
+        // для определения правильной длины текста - перекодируем
+        $text = iconv('utf-8', 'windows-1251//IGNORE',$text);
+
+        //$sizeText = strlen(preg_replace( '#\s+#', ' ', strip_tags($text)));
+        $sizeText = strlen(str_replace(' ', '', $text));
 
         //минимально допустимая длина текста
         $aberrance_minus =  intval($this->requirement - MyText::getPercentFromNumber($this->requirement, $this->aberrance));
@@ -59,7 +77,7 @@ class TextSizeComponent extends CApplicationComponent {
     private function textError($sizeText){
         return
             'К сожалению, объем текста, предложенный Вами, не соответствует заданному нормативу.
-        Исходное требование – '.$this->requirement.' знаков без пробелов, с допустимым отклонением от нормы в ту или иную сторону '.$this->aberrance.' знаков без пробелов.
+        Исходное требование – '.$this->requirement.' знаков без пробелов, с допустимым отклонением от нормы в ту или иную сторону '.$this->aberrance.'% знаков без пробелов.
         В то же время объем предложенного Вами текста - '.$sizeText.' знаков без пробелов.
         Приведите объем текста в соответствие с заданными требованиями и перезапустите проверку.';
     }

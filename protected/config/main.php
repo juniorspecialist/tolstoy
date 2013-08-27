@@ -70,6 +70,18 @@ return array(
 
 	// application components
 	'components'=>array(
+
+        //компонент для проверки текста  - Плотность вхождения ключей - тошнота
+        'sickness' => array(
+            'class' => 'application.components.check.ESicknessComponent',
+            'limitSicknes'=>6,//настройка предельной «тошноты», в процентах задаваемая администратором
+        ),
+
+        // компонент для определения длины текста, относительно настроек в проекте
+        'textSize' => array(
+            'class' => 'application.components.check.TextSizeComponent',
+        ),
+
         // компонент для сравнения текстов на уникальность+подготовка их в сравнению на уникальность
         'shingle' => array(
             'class' => 'EShinglesComponent',
