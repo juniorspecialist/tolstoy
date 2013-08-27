@@ -75,6 +75,20 @@ class MyText
             }
 
             return $base;
-    }    
+    }
+
+    /*
+     * подсчитаем процент от числа
+     */
+    static function getPercentFromNumber($number='', $percent=''){
+
+        if(empty($number) || empty($percent)){
+            return 'Empty value number OR percent';
+        }
+
+        $result = ($number*$percent)/100;
+
+        return (int)$result;
+    }
 
 }

@@ -89,7 +89,7 @@ class EShinglesComponent extends CApplicationComponent
             $shingles[implode(' ', $shingle)] = 0;
         }
 
-        unset($elements);
+        //unset($elements);
 
         return array_keys($shingles);
     }
@@ -103,6 +103,8 @@ class EShinglesComponent extends CApplicationComponent
      */
     private function terminateShortElement($elements)
     {
+        $res = array();
+
         foreach($elements as $item)
         {
             $item = trim($item);
@@ -121,14 +123,14 @@ class EShinglesComponent extends CApplicationComponent
      * @param string $text
      * @return string text
      */
-    private function cleanText($text)
+    public function cleanText($text)
     {
         $newText = strip_tags($text);
         $newText = preg_replace("[\,|\.|\'|\"|\\|\/|\:|\;|\(|\)|\{|\}|\$|\#|\*|\-|\+|\%|\=|\?|\!|\&|\^|\`|\~|\№]","",$newText);
         $newText = preg_replace("[\n|\t]"," ",$newText);
         $newText = preg_replace('/(\s\s+)/', ' ', trim($newText));
 
-        unset($text);
+        //unset($text);
 
         return $newText;
     }
@@ -162,10 +164,10 @@ class EShinglesComponent extends CApplicationComponent
             return 100;
         }
 
-        $diff = (count($intersect)/$countMerge)*100;
+        $diff = floatval(count($intersect)/$countMerge)*100;
 
-        unset($firstShingles);
-        unset($secondShingles);
+        //unset($firstShingles);
+        //unset($secondShingles);
 
         return $diff;
     }
@@ -198,7 +200,7 @@ class EShinglesComponent extends CApplicationComponent
             if((sizeof($exp_text)-1)==$j){
                 $parts_list[] = $part;
             }else{
-                if(strlen($part)>500){
+                if(strlen($part)>1000){
                     // формируем массив кусков текста, нужной длины, по которым будем позднее строить списки ШИНГЛОВ
                     $parts_list[] = $part;
                     $part = '';
@@ -217,6 +219,27 @@ class EShinglesComponent extends CApplicationComponent
 
         // список кусков текста+ по каждому куску - массив шинглов
         return $part_text_with_shingles;
+    }
+
+    /*
+     * из массива шинглов - получаем 3 случайных значения
+     * и возвращаем их в нужном формате, для запроса к Яндексу
+     */
+    public function getRandomShigles($shingle_list, $rnd_number=3){
+
+        $rand_keys = array_rand($shingle_list, $rnd_number);
+
+        $result_str = '';
+
+        if($rnd_number==3){
+            return '('.@$shingle_list[$rand_keys[0]].')|('.@$shingle_list[$rand_keys[1]].')|('.@$shingle_list[$rand_keys[2]].')';
+        }
+        if($rnd_number==2){
+            return '('.@$shingle_list[$rand_keys[0]].')|('.@$shingle_list[$rand_keys[1]].')';
+        }
+        if($rnd_number==4){
+            return '('.@$shingle_list[$rand_keys[0]].')|('.@$shingle_list[$rand_keys[1]].')|('.@$shingle_list[$rand_keys[2]].')|('.@$shingle_list[$rand_keys[3]].')';
+        }
     }
 }
 //http://yandex.ru/yandsearch?text=%28%22%D0%BA%D0%B0%D0%BA%20%D1%82%D0%BE%20%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B0%D1%82%D1%8C%20%D0%BE%D0%B1%22%29%20%7C%20%28%22%D0%BA%D1%80%D0%B0%D1%85%22%20%22%D0%AD%D1%82%D0%BE%20%D0%B6%D0%B5%20%D0%BA%D0%B0%D1%81%D0%B0%D0%B5%D1%82%D1%81%D1%8F%22%29&lr=225&rd=0

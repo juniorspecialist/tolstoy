@@ -75,12 +75,16 @@ class Encoding {
      */
     static function toUTF_8($text, $link=''){
 
+        // убираем лишние теги и спец. символы из текста полученной строки, чтобы без проблем перекодировку делать
+        $shingle = Yii::app()->shingle;
+        $text = $shingle->cleanText($text);
+
         $possible_encodings = array('windows-1251', 'koi8-r', 'iso8859-5');
 
         $is_utf_8  = Encoding::is_utf8($text);
         // если у текста кодировка UTF-8, тогда перекодирование и дальнейшие варианты кодировок исключаем
         if($is_utf_8){
-            file_put_contents('log/link='.time().'.txt',$link.'|code page=utf-8');
+            //file_put_contents('log/link='.time().'.txt',$link.'|code page=utf-8');
             return $text;
         }else{
             // текст не в  UTF-8 кодировке, определяем кодировку текста - долго и нудно ))
@@ -119,9 +123,9 @@ class Encoding {
                 }
             }
 
-            file_put_contents('log/link='.time().'.txt',$link.'|code page='.$encode_page);
+            //file_put_contents('log/link='.time().'.txt',$link.'|code page='.$encode_page);
 
-            return iconv($encode_page, 'utf-8//TRANSLIT',$text);
+            return @iconv($encode_page, 'utf-8//TRANSLIT//IGNORE',$text);
         }
     }
 }

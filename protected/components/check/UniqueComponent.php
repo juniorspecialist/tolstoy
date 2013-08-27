@@ -45,6 +45,9 @@ class UniqueComponent extends CApplicationComponent {
             //break;
         }
 
+        // возможно в списке ссылок есть дубли - избавимся от них
+        $this->links_list = array_unique($this->links_list);
+
         // список содержимого страничек по найденным ссылкам из выдачи ПС
         $list_contents_pages = array();
 
@@ -56,7 +59,8 @@ class UniqueComponent extends CApplicationComponent {
             $find_file = pathinfo($link_page);
             if(!empty($find_file['extension'])){ continue;}
 
-            $content_page = $this->curlBehavior->get($link_page);
+            //$content_page = $this->curlBehavior->get($link_page);
+            $content_page = @file_get_contents($link_page);
 
             file_put_contents('log/'.'получаем страницу_'.$k.'.txt',$link_page);
 
@@ -87,17 +91,37 @@ class UniqueComponent extends CApplicationComponent {
 
         $incomingTextShingles = $textCompare->getShingle($text);
 
-        $unique_all = 0;
+        $unique_list = array();
 
         foreach($contents_list as $k=>$site_page){
+
             $similarity = Yii::app()->shingle->checkText($incomingTextShingles, $site_page);
 
+            $similarity = $similarity;
+
             echo $similarity.'<br>'; //в данном случае результат будет 100
+
+            //if($similarity<$unique_all && $similarity!==0){
+            $unique_list[] = floatval($similarity);
+            //}
+
+
             //echo 'k='.$k.'|уникальность='.$textCompare->checkText($textCompare->getShingle($text), $textCompare->getShingle($site_page)).'<br>';
-            $unique_all=+$similarity;
+            //$unique_all=+floatval($similarity);
         }
 
-        echo 'Уникальность текста='.$unique_all.'<br>';
+        sort($unique_list);
+
+        echo '<pre>'; print_r($unique_list);
+
+        if(!empty($unique_list)){
+            $percent = $unique_list[sizeof($unique_list)-1];
+        }else{
+            $percent = 1;
+        }
+
+
+        echo 'Уникальность текста = '.floatval($percent).' %<br>';
 
     }
 
@@ -107,33 +131,51 @@ class UniqueComponent extends CApplicationComponent {
     public function parseYandex($shingle_list){
         // формируем строку для отправки запроса к яндексу
         //("шингл 1") | ("шингл 2")| ("шингл 3")
-        $url_shingle = '("'.$shingle_list[0].'")|("'.$shingle_list[1].'")|("'.$shingle_list[2].'")';
+        //$url_shingle = '("'.@$shingle_list[0].'")|("'.@$shingle_list[1].'")|("'.@$shingle_list[2].'")';
+        $url_shingle = Yii::app()->shingle->getRandomShigles($shingle_list);
 
         // используем поведение, для отправки запроса к яндексу, через прокси
         // страница результатов яндекса - выдача ПС
 
         $header = array(
             'Accept'=>'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding:'=>'gzip,deflate,sdch',
-            'Accept-Language'=>'ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4',
+            'Accept-Encoding:'=>'gzip,deflate',
+            'Accept-Language'=>'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
             'Cache-Control'=>'max-age=0',
             'Connection'=>'keep-alive',
-            'Host'=>'www.yandex.ru',
+            'Host'=>'yandex.ru',
+
         );
 
-        $ya_page = $this->
-            curlBehavior->
-            get('http://yandex.ru/yandsearch?lr='.$this->ya_region.'&text='.urlencode($url_shingle),
-                $header,
-                $this->getRndProxy(),
-                $this->curlBehavior->proxy_login,
-                $this->curlBehavior->proxy_pass
-            );
+        $ya_page = '';
 
+        //sleep(1);
+        for($try=0;$try<10;$try++){
+
+            $url = 'http://yandex.ru/yandsearch?lr='.$this->ya_region.'&text='.urlencode(Yii::app()->shingle->getRandomShigles($shingle_list));
+
+            $ya_page = $this->curlBehavior->get($url,$header, $this->curlBehavior->getRndProxy(), $this->curlBehavior->proxy_login, $this->curlBehavior->proxy_pass);//
+
+
+            if(preg_match('/<strong class="b-head-name">ой\.\.\.<\/strong>/i',$ya_page)){
+                sleep(10);continue;
+            }
+
+            if(empty($ya_page)){
+                file_put_contents('log/'.time().'_empty ou_try='.$try.'.txt','url='.$url.'|page='.$ya_page);
+            }else{
+                // бан яндекса
+                if(preg_match('/<td class="headCode">403<\/td>/i',$ya_page)){
+                    sleep(10);
+                }elseif(preg_match('/407 Proxy Authentication Required/i', $ya_page)){
+                    // прокси сбоянуло
+                }else{
+                    break;
+                }
+            }
+            sleep(10);
+        }
         file_put_contents('log/'.'парсим выдачу яндекса и находими список ссылок на ресурсы.txt',$ya_page);
-
-        //echo $ya_page.'<br>';
-
         /*
          * парсим выдачу яндекса и находими список ссылок на ресурсы
          */
