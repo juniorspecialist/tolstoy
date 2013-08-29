@@ -71,6 +71,11 @@ return array(
 	// application components
 	'components'=>array(
 
+        //компонент для определения - Точность вхождения ключей по заданному тексту
+        'accuracyEntryKeys'=>array(
+            'class'=>'application.components.check.EAccuracyEntryKeysComponent',
+        ),
+
         //компонент для проверки текста  - Плотность вхождения ключей - тошнота
         'sickness' => array(
             'class' => 'application.components.check.ESicknessComponent',

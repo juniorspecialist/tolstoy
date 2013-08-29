@@ -98,16 +98,14 @@ class ESicknessComponent extends CApplicationComponent {
             }
         }
 
-        //echo '<pre>'; print_r($stopListWords);
-
-        $baseFormWordsList = $this->baseFormForWord($cleanWordsList);
-
-        $this->frequencyDictionary = $baseFormWordsList;
+        // на основании списка слов - получаем список словоформ для этих слов
+        //$not_empty - означает, что не выводить в массив данных слова для которых слово-форма не найдена
+        $this->frequencyDictionary = $this->baseFormForWord($cleanWordsList,$not_empty = false);
 
         $error = false;
 
         // подсчитаем процентное соотношение
-        foreach($baseFormWordsList as  $baseFormWord=>$countReplay){
+        foreach($this->frequencyDictionary as  $baseFormWord=>$countReplay){
             $percent = MyText::getPercentFromNumber($total, $countReplay);
             if($percent>$this->limitSicknes && !empty($baseFormWord)){
                 $this->error = true;
@@ -116,6 +114,14 @@ class ESicknessComponent extends CApplicationComponent {
         }
 
         //echo '<pre>'; print_r($res);
+    }
+
+    /*
+     * получаем словарь-словоформ для проверяемого текста, для последующих проверок из текущей проверки
+     * т.е. получаем массив слово-форм один раз, чтобы не формировать его каждый раз при проверках за один цикл проверки для последовательных проверок
+     */
+    public function getFrequencyDictionary(){
+        return $this->frequencyDictionary;
     }
 
     /*
@@ -138,8 +144,9 @@ class ESicknessComponent extends CApplicationComponent {
 
     /*
      * возвращаем базовую слово-форму для слова
+     * //$not_empty - означает, что не выводить в массив данных слова для которых слово-форма не найдена
      */
-    public function baseFormForWord($words){
+    public function baseFormForWord($words, $not_empty = true){
 
         error_reporting(E_ALL | E_STRICT);
 
@@ -161,7 +168,9 @@ class ESicknessComponent extends CApplicationComponent {
             $morphy = new phpMorphy($dir, 'ru_RU', $opts);
         } catch(phpMorphy_Exception $e) {
             die('Error occured while creating phpMorphy instance: ' . $e->getMessage());
-        }
+        }//if(!defined('PHPMORPHY_DIR')) {
+//    define('PHPMORPHY_DIR', dirname(__FILE__));
+//}
 
         try {
 
@@ -173,10 +182,21 @@ class ESicknessComponent extends CApplicationComponent {
                 //echo 'word='.$words[$i].'<br>';
                 $form = $morphy->lemmatize(mb_strtoupper($word));
                 $sw = mb_strtolower($form[0]);
-                if(isset($table[$sw])) {
-                    $table[$sw] += 1;
-                } else {
-                    $table[$sw] = 1;
+                // если не найдена слово-форма для слова - всё равно записываем в результирующий массив
+                if($not_empty){
+                    if(isset($table[$sw])) {
+                        $table[$sw] += 1;
+                    } else {
+                        $table[$sw] = 1;
+                    }
+                }else{
+                    if(!empty($sw)){
+                        if(isset($table[$sw])) {
+                            $table[$sw] += 1;
+                        } else {
+                            $table[$sw] = 1;
+                        }
+                    }
                 }
             }
             asort($table);
