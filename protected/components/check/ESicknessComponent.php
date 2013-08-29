@@ -39,6 +39,9 @@ class ESicknessComponent extends CApplicationComponent {
     //частотный словарь по тексту - храним в нём список слово-форм, чтобы в последующих проверках не формировать частный словарь по тексту
     private $frequencyDictionary = array();
 
+    //общее кол-во слов - 100%
+    public $total = 0;
+
     /*
      * возрвщаем массив стоп-слов, для отфильтрования
      */
@@ -83,7 +86,7 @@ class ESicknessComponent extends CApplicationComponent {
         $slovoFormList = array();
 
         //общее кол-во слов - 100%
-        $total = sizeof($wordsList);
+        $this->total = sizeof($wordsList);
 
         //очищаем список по стоп-листу
         foreach($wordsList as $word){
@@ -102,8 +105,9 @@ class ESicknessComponent extends CApplicationComponent {
         //$not_empty - означает, что не выводить в массив данных слова для которых слово-форма не найдена
         $this->frequencyDictionary = $this->baseFormForWord($cleanWordsList,$not_empty = false);
 
-        $error = false;
+    }
 
+    public function checkResult($total){
         // подсчитаем процентное соотношение
         foreach($this->frequencyDictionary as  $baseFormWord=>$countReplay){
             $percent = MyText::getPercentFromNumber($total, $countReplay);
@@ -112,8 +116,6 @@ class ESicknessComponent extends CApplicationComponent {
                 $this->errorText[] = $baseFormWord.'-'.$percent.'%';
             }
         }
-
-        //echo '<pre>'; print_r($res);
     }
 
     /*
@@ -132,6 +134,9 @@ class ESicknessComponent extends CApplicationComponent {
         $this->pathToStopWords = Yii::getPathOfAlias('application.components.check').'/stop_words_rus.txt';
 
         $this->clearStopListText($text);
+
+        //проверим результат работы - обработки текста
+        $this->checkResult($this->total);
 
         // нет ошибок
         if(!$this->error){

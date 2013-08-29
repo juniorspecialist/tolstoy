@@ -20,6 +20,12 @@ class EAccuracyEntryKeysComponent extends CApplicationComponent {
 
         // получим из предыдущей проверки список слово-форм по проверяемому тексту
         $sickness = Yii::app()->sickness;
-        echo '<pre>'; print_r($sickness->getFrequencyDictionary());
+
+        $this->frequencyDictionary = $sickness->getFrequencyDictionary();
+
+        // если предыдущая проверка не проводилась или просто результат пустой, тогда формируем заново- список слово-форм для текста, используя методы из компонента - "Тошнота"
+        if(empty($this->frequencyDictionary)){
+
+        }
     }
 }
