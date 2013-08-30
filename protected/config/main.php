@@ -1,8 +1,7 @@
 <?php
-
 // uncomment the following to define a path alias
-// Yii::setPathOfAlias('local','path/to/local-folder');
-
+ Yii::setPathOfAlias('pathToStopWords',dirname(__FILE__).'/../components/check/stop_words_rus.txt');
+//die('pathToStopWords='.Yii::getPathOfAlias('pathToStopWords'));
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
@@ -80,6 +79,7 @@ return array(
         'sickness' => array(
             'class' => 'application.components.check.ESicknessComponent',
             'limitSicknes'=>6,//настройка предельной «тошноты», в процентах задаваемая администратором
+            //'pathToStopWords'=>,
         ),
 
         // компонент для определения длины текста, относительно настроек в проекте

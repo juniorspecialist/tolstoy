@@ -26,15 +26,18 @@ $text1 = 'Наибольшей популярностью у потребите�
 //echo phpinfo();
 
 //$application->run();
+
+/*
 $sickness = Yii::app()->sickness;
 $res = $sickness->checkText($text1);
 if($res===true){
     echo 'ok<br>';
 }else{
     echo $res.'<br>';
-}
+}*/
 echo '<br><br>';
 
 //frequencyDictionary
 $accuracyEntryKeys = Yii::app()->accuracyEntryKeys;
 $res = $accuracyEntryKeys->checkText($text1);
+echo $res;

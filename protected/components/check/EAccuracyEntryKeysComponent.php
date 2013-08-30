@@ -25,7 +25,10 @@ class EAccuracyEntryKeysComponent extends CApplicationComponent {
 
         // если предыдущая проверка не проводилась или просто результат пустой, тогда формируем заново- список слово-форм для текста, используя методы из компонента - "Тошнота"
         if(empty($this->frequencyDictionary)){
-
+            $sickness->clearStopListText($text);
+            $this->frequencyDictionary = $sickness->getFrequencyDictionary();
         }
+
+        echo '<pre>'; print_r($this->frequencyDictionary);
     }
 }

@@ -131,7 +131,9 @@ class ESicknessComponent extends CApplicationComponent {
      */
     public function checkText($text){
 
-        $this->pathToStopWords = Yii::getPathOfAlias('application.components.check').'/stop_words_rus.txt';
+        //$this->pathToStopWords = Yii::getPathOfAlias('application.components.check').'/stop_words_rus.txt';
+
+        $this->pathToStopWords = Yii::getPathOfAlias('pathToStopWords');//.'/stop_words_rus.txt'
 
         $this->clearStopListText($text);
 
