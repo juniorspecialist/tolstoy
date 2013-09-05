@@ -70,6 +70,11 @@ return array(
 	// application components
 	'components'=>array(
 
+        // компонент для определения - Порядок следования ключей
+        'sequenceKeys'=>array(
+            'class'=>'application.components.check.EAccuracyEntryKeysComponent',
+        ),
+
         //компонент для определения - Точность вхождения ключей по заданному тексту
         'accuracyEntryKeys'=>array(
             'class'=>'application.components.check.EAccuracyEntryKeysComponent',
