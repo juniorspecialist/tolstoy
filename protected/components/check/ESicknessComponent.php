@@ -175,9 +175,7 @@ class ESicknessComponent extends CApplicationComponent {
             $morphy = new phpMorphy($dir, 'ru_RU', $opts);
         } catch(phpMorphy_Exception $e) {
             die('Error occured while creating phpMorphy instance: ' . $e->getMessage());
-        }//if(!defined('PHPMORPHY_DIR')) {
-//    define('PHPMORPHY_DIR', dirname(__FILE__));
-//}
+        }
 
         try {
 
@@ -214,6 +212,15 @@ class ESicknessComponent extends CApplicationComponent {
 
         return false;
 
+    }
+
+    /*
+     * получение леммы-для одного слова
+     */
+    public function getLemmaForWord($word=''){
+        if(!empty($word)){
+
+        }
     }
 
     /*

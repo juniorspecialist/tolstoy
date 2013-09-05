@@ -26,7 +26,7 @@
         <div class="row" >
             <?php
             echo CHtml::label('Тип ошибки:', 'error_type');
-            echo CHtml::listBox('type_error',$_POST['type_error'] , Errors::getListErrors(), array('size'=>1));
+            echo CHtml::listBox('type_error',(isset($_POST['type_error'])?$_POST['type_error']:'') , Errors::getListErrors(), array('size'=>1));
             ?>
         </div>
         <div class="row">
