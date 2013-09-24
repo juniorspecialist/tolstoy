@@ -39,7 +39,7 @@ class UniqueComponent extends CApplicationComponent {
         // по каждой части делаем запрос к яндексу, где указываем 3 разных шингла
         //array('part_text'=>$part_text, 'shingles_list'=>$list_shingle);
         foreach($list_parts as $l=>$row){
-            file_put_contents('log/'.$l.'|по каждой части делаем запрос к яндексу.txt','');
+            //file_put_contents('log/'.$l.'|по каждой части делаем запрос к яндексу.txt','');
             // получаем список источников, которые выдал нам Яндекс при запросе с шинглами
             $this->parseYandex($row['shingles_list']);
             //break;
@@ -51,7 +51,7 @@ class UniqueComponent extends CApplicationComponent {
         // список содержимого страничек по найденным ссылкам из выдачи ПС
         $list_contents_pages = array();
 
-        file_put_contents('log/'.'по списку полученных ссылок получаем страницы с определнием кодировки.txt','');
+        //file_put_contents('log/'.'по списку полученных ссылок получаем страницы с определнием кодировки.txt','');
         // по списку полученных ссылок получаем страницы с определнием кодировки
         foreach($this->links_list as $k=>$link_page){
 
@@ -62,11 +62,11 @@ class UniqueComponent extends CApplicationComponent {
             //$content_page = $this->curlBehavior->get($link_page);
             $content_page = @file_get_contents($link_page);
 
-            file_put_contents('log/'.'получаем страницу_'.$k.'.txt',$link_page);
+            //file_put_contents('log/'.'получаем страницу_'.$k.'.txt',$link_page);
 
             // преобразовываем текст в кодировку UTF-8
             if(!empty($content_page)){
-                file_put_contents('log/convert_url_'.$k.'.txt',$link_page);
+                //file_put_contents('log/convert_url_'.$k.'.txt',$link_page);
                 $list_contents_pages[] = Encoding::toUTF_8($content_page, $link_page);
             }
         }
@@ -87,7 +87,7 @@ class UniqueComponent extends CApplicationComponent {
         //Устанавливаем длину шингла в два слова
         //$textCompare->shinglePrice = 2;
 
-        file_put_contents('log/'.'сравниваем исходный текст с текстами полученными из ПС.txt','');
+        //file_put_contents('log/'.'сравниваем исходный текст с текстами полученными из ПС.txt','');
 
         $incomingTextShingles = $textCompare->getShingle($text);
 
@@ -162,7 +162,7 @@ class UniqueComponent extends CApplicationComponent {
             }
 
             if(empty($ya_page)){
-                file_put_contents('log/'.time().'_empty ou_try='.$try.'.txt','url='.$url.'|page='.$ya_page);
+                //file_put_contents('log/'.time().'_empty ou_try='.$try.'.txt','url='.$url.'|page='.$ya_page);
             }else{
                 // бан яндекса
                 if(preg_match('/<td class="headCode">403<\/td>/i',$ya_page)){
@@ -175,13 +175,13 @@ class UniqueComponent extends CApplicationComponent {
             }
             sleep(10);
         }
-        file_put_contents('log/'.'парсим выдачу яндекса и находими список ссылок на ресурсы.txt',$ya_page);
+        //file_put_contents('log/'.'парсим выдачу яндекса и находими список ссылок на ресурсы.txt',$ya_page);
         /*
          * парсим выдачу яндекса и находими список ссылок на ресурсы
          */
         preg_match_all('/<\/b><a class="b-serp-item__title-link" href="(.*?)" onmousedown/si',$ya_page, $links_yandex_resource);
 
-        echo '<pre>'; print_r($links_yandex_resource[1]);
+        //echo '<pre>'; print_r($links_yandex_resource[1]);
 
         //$links_yandex_resource[1] - массив сссылок на результаты запроса из яндекса
 

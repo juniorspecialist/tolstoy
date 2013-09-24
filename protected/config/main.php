@@ -70,10 +70,19 @@ return array(
 	// application components
 	'components'=>array(
 
-        // компонент для определения - Расстояние между словами в ключевике
+        //компонент для проверки ОРфографии через Яндекс
+        'spelller'=>array(
+            'class' => 'application.components.check.YaSpellerComponent',
+            'behaviors' => array (
+                'curlBehavior' => array(
+                    'class' => 'application.extensions.behaviors.CurlBehavior',
+                ),
+            ),
+        ),
 
+        // компонент для определения - Расстояние между словами в ключевике
         'distanceBetweenWords'=>array(
-            'class'=>'application.components.check.EdistanceBetweenWords',
+            'class'=>'application.components.check.EdistanceBetweenWordsComponent',
         ),
 
         // компонент для определения - Порядок следования ключей

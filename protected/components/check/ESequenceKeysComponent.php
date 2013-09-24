@@ -41,7 +41,6 @@ class ESequenceKeysComponent extends CApplicationComponent {
     // массив предложений и составленного частотного словаря по каждому предложению
     public $sentenceListLemma = array();
 
-
     //частотный словарь для каждого ключевика составляем в формате - [ключевое слово номер один]=>array('ключь', 'слово',' номер','один')
     public $keyWordsListWithLemma = array();
 
@@ -60,14 +59,11 @@ class ESequenceKeysComponent extends CApplicationComponent {
      */
     private $frequencyDictionary = array();
 
-    /*
-     * запускаем проверку по тексту
-     */
-    public function checkText($text='', $keyWordsList=''){
 
-        if(empty($this->toleranceRange)){
-            return 'Не указан параметр допуска';
-        }
+    /*
+     * составляем частотные словари как для самого текста с предложениями, так и для списка ключевиков
+     */
+    public function getLemmaFor($text='', $keyWordsList=''){
 
         //разбивает текст на предложения
         $this->sentenceList = explode('.', $text);
@@ -107,6 +103,20 @@ class ESequenceKeysComponent extends CApplicationComponent {
 
             $this->keyWordsListWithLemma[$keyWord] = $lemmaKeyWords;
         }
+
+    }
+
+    /*
+     * запускаем проверку по тексту
+     */
+    public function checkText($text='', $keyWordsList=''){
+
+        if(empty($this->toleranceRange)){
+            return 'Не указан параметр допуска';
+        }
+
+        //формируем ЛЕММЫ для ключевиков и предложения
+        $this->getLemmaFor($text='', $keyWordsList='');
 
         // производим сравнение вхождения ключевиков по предложениям
         $this->findProposal();

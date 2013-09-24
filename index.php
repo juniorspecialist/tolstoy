@@ -40,15 +40,19 @@ if($res===true){
 }*/
 //echo '<br><br>';
 //
+
+//die($res);
+//echo '<pre>'; print_r(json_decode($res, true)); die();
+
 $keyList = array(
   'монтаж вентиляции и монтаж чиллеров',
   'монтаж классной вентиляции и интересных чиллеров',
   'отопления для дома'
 );
 
-$sequenceKeys = Yii::app()->sequenceKeys;
-$sequenceKeys->toleranceRange = 1;
-$res = $sequenceKeys->checkText($text1,$keyList);
+$distanceBetweenWords = Yii::app()->distanceBetweenWords;
+$distanceBetweenWords->toleranceRange = 1;
+$res = $distanceBetweenWords->checkText($text1,$keyList);
 
 if($res===true){
     echo 'ok';
@@ -56,7 +60,7 @@ if($res===true){
     echo $res;
 }
 
-//echo $res;
+
 
 
 
