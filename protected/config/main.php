@@ -70,9 +70,15 @@ return array(
 	// application components
 	'components'=>array(
 
+        // компонент для определения - Расстояние между словами в ключевике
+
+        'distanceBetweenWords'=>array(
+            'class'=>'application.components.check.EdistanceBetweenWords',
+        ),
+
         // компонент для определения - Порядок следования ключей
         'sequenceKeys'=>array(
-            'class'=>'application.components.check.EAccuracyEntryKeysComponent',
+            'class'=>'application.components.check.ESequenceKeysComponent',
         ),
 
         //компонент для определения - Точность вхождения ключей по заданному тексту

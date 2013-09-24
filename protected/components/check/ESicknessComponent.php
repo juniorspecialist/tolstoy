@@ -73,8 +73,9 @@ class ESicknessComponent extends CApplicationComponent {
         //убираем двойные и более - пробелы
         $text = preg_replace("/(\s){2,}/",' ',$text);
 
-        $text = str_replace(".", "", $text);
-        $text = str_replace(",", "", $text);
+        $text = str_replace(".", " ", $text);
+        $text = str_replace(",", " ", $text);
+
         //$text = preg_replace("/\s+/", " ", $text);
 
         //стоп-лист слов
@@ -82,11 +83,15 @@ class ESicknessComponent extends CApplicationComponent {
 
         $wordsList = explode(' ', $text);
 
+        //echo '<pre>'; print_r($wordsList);
+
         // список слово-форм для слов из текста
         $slovoFormList = array();
 
         //общее кол-во слов - 100%
         $this->total = sizeof($wordsList);
+
+        $cleanWordsList = array();
 
         //очищаем список по стоп-листу
         foreach($wordsList as $word){
@@ -101,9 +106,11 @@ class ESicknessComponent extends CApplicationComponent {
             }
         }
 
+        //echo '<pre>'; print_r($cleanWordsList);
         // на основании списка слов - получаем список словоформ для этих слов
         //$not_empty - означает, что не выводить в массив данных слова для которых слово-форма не найдена
         $this->frequencyDictionary = $this->baseFormForWord($cleanWordsList,$not_empty = false);
+        //echo '<pre>'; print_r($this->frequencyDictionary);
 
     }
 
@@ -204,7 +211,7 @@ class ESicknessComponent extends CApplicationComponent {
                     }
                 }
             }
-            asort($table);
+            //asort($table);
             return $table;
         } catch(phpMorphy_Exception $e) {
             die('Error occured while text processing: ' . $e->getMessage());

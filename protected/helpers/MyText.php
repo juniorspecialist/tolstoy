@@ -91,4 +91,16 @@ class MyText
         return (int)$result;
     }
 
+    /*
+     * получаем первый индекс из массива
+     */
+    static function getFirstIndexOfArray($array){
+        if(is_array($array)){
+            foreach($array as $index=>$value){
+                return $index;
+            }
+        }else{
+            return '';
+        }
+    }
 }
