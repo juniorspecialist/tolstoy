@@ -80,6 +80,18 @@ return array(
             ),
         ),
 
+        //компонент для проверки ПУНКТУАЦИИ
+        'punctuation'=>array(
+            'class' => 'application.components.check.PunctuationComponent',
+            'ipServer'=>'http://127.0.0.1',// IP сервера на котором находится джава-сервер для отправки на него запросов на проверку текста
+            'portServer'=>8081,
+        ),
+
+        // компонент для - Равномерность распределения ключей
+        'uniformDistributionKeys'=>array(
+            'class'=>'application.components.check.EUniformDistributionKeysComponent',
+        ),
+
         // компонент для определения - Расстояние между словами в ключевике
         'distanceBetweenWords'=>array(
             'class'=>'application.components.check.EdistanceBetweenWordsComponent',
@@ -164,7 +176,7 @@ return array(
             // включаем профайлер
             //'enableProfiling'=>true,
             // показываем значения параметров
-            //'enableParamLogging' => true,			
+            //'enableParamLogging' => true,
 			//'schemaCachingDuration'=>36000,
 		),
 
@@ -172,37 +184,34 @@ return array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',
 		),
-        'log'=>array(
-            'class'=>'CLogRouter',
-            'routes'=>array(
-                /*array(
-                    'class'=>'CFileLogRoute',
-                    'levels'=>'error, warning',
-                ),*/
-                 // array(
-                      // направляем результаты профайлинга в ProfileLogRoute (отображается
-                      // внизу страницы)
-                 //     'class'=>'CProfileLogRoute',
-                 //     'levels'=>'profile',
-                 //     'enabled'=>true,
-                 // ),
-                 /* array(
-                      'class' => 'CWebLogRoute',
-                      'categories' => 'application',
-                      'levels'=>'error, warning, trace, profile, info',
-					  'showInFireBug' => true,
-                  ),
-				  */
-                // uncomment the following to show log messages on web pages
-
+//        'log'=>array(
+//            'class'=>'CLogRouter',
+//            'routes'=>array(
+//                array(
+//                    'class'=>'CFileLogRoute',
+//                    'levels'=>'error, warning',
+//                ),
+//                  array(
+////                       направляем результаты профайлинга в ProfileLogRoute (отображается
+////                       внизу страницы)
+//                      'class'=>'CProfileLogRoute',
+//                      'levels'=>'profile',
+//                      'enabled'=>true,
+//                  ),
+//                  array(
+//                      'class' => 'CWebLogRoute',
+//                      'categories' => 'application',
+//                      'levels'=>'error, warning, trace, profile, info',
+//					  'showInFireBug' => true,
+//                  ),
+//
+//                // uncomment the following to show log messages on web pages
+//
 //                array(
 //                    'class'=>'CWebLogRoute',
 //                ),
-
-
-
-            ),
-        ),
+//            ),
+//        ),
 	),
 
 	// application-level parameters that can be accessed

@@ -17,6 +17,9 @@ $res = $speller->curlBehavior->post($url,'',  $data);//
 
 class YaSpellerComponent extends CApplicationComponent{
 
+    public function checkText($text){
+
+    }
 
 
 }

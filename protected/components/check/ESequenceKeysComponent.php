@@ -63,10 +63,10 @@ class ESequenceKeysComponent extends CApplicationComponent {
     /*
      * составляем частотные словари как для самого текста с предложениями, так и для списка ключевиков
      */
-    public function getLemmaFor($text='', $keyWordsList=''){
+    public function getLemmaFor($text, $keyWordsList){
 
         //разбивает текст на предложения
-        $this->sentenceList = explode('.', $text);
+        $this->sentenceList = MyText::delEmptyValInArray(explode('.', $text));
 
         // подключаем компонент для определения слово-форм отдельно для каждого предложения
         $sickness = Yii::app()->sickness;
@@ -116,7 +116,7 @@ class ESequenceKeysComponent extends CApplicationComponent {
         }
 
         //формируем ЛЕММЫ для ключевиков и предложения
-        $this->getLemmaFor($text='', $keyWordsList='');
+        $this->getLemmaFor($text, $keyWordsList);
 
         // производим сравнение вхождения ключевиков по предложениям
         $this->findProposal();
@@ -196,7 +196,7 @@ class ESequenceKeysComponent extends CApplicationComponent {
 
             // если расстояние между вхождениями словами из ключа больше, чем допустимый допуск
             if($delta>0){
-                //echo $delta.'|more-'.$word.'<br>';
+                echo $delta.'|more-'.$word.'<br>';
                 return false;
             }
             $before_pos = $pos;
