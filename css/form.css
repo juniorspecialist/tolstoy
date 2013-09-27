@@ -59,8 +59,30 @@ div.form label
 	font-size: 0.9em;
 	/*display: block;*/
     display:inline-block;
-    width: 220px;
+    width: 360px;
 }
+
+div#login
+{
+    width: 550px;
+    margin: 0 auto;
+    /*border: 1px solid red;*/
+}
+
+div#login label{
+    width: 250px;
+}
+
+div.row input[type=checkbox]
+{
+    margin-right: 10px;
+}
+
+div.row select
+{
+    margin-right: 10px;
+}
+
 
 div.form .row
 {

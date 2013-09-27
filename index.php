@@ -1,7 +1,7 @@
 <?php
-error_reporting(E_ALL | E_STRICT) ;
+//error_reporting(E_ALL | E_STRICT) ;
 $start = microtime(true);
-ini_set('display_errors', 'On');
+//ini_set('display_errors', 'On');
 set_time_limit(0);
 ini_set('memory_limit', '160M'); // 128 по-моему не хватало
 ini_set('pcre.backtrack_limit', '5000000'); // 1000000 было мало
@@ -22,31 +22,6 @@ $text1 = 'Потребность в экологически чистых про
 Отопительные системы для отопления для офиса и дома.
 Современные технологии и оборудование позволяют добиться нужных результатов в довольно короткие сроки, благодаря чему можно максимально очистить воздух помещений и совершенно спокойно позволить себе дышать,как говориться, полной грудью.
 Сегодня довольно часто можно встретить объявления такого плана: «нужна бригада на вентиляцию и монтаж интересных чиллеров и кодеигнайтеров.';
-//$shingle = Yii::app()->shingle;
-//$shingle->runCheck($text1);
-//$parts = $shingle->get3Parts($text1);
-//echo '<pre>';print_r($parts);
-//die(Yii::getPathOfAlias("application.runtime").'/cookie.txt');
-
-//$unique = Yii::app()->uniqueCheck;$unique->runCheck($text1);
-
-//echo phpinfo();
-
-
-
-/*
-$sickness = Yii::app()->sickness;
-$res = $sickness->checkText($text1);
-if($res===true){
-    echo 'ok<br>';
-}else{
-    echo $res.'<br>';
-}*/
-//echo '<br><br>';
-//
-
-//die($res);
-//echo '<pre>'; print_r(json_decode($res, true)); die();
 
 $keyList = array(
   'монтаж вентиляции и монтаж чиллеров',
@@ -54,7 +29,7 @@ $keyList = array(
   'отопления для дома'
 );
 
-$punctuation = Yii::app()->punctuation;
-//echo 'path='.$punctuation->pathToCatalog.'<br>';
-$punctuation->serverStart();
-$punctuation->checkText($text1,array('чиллеры','кодеигнайтеры'));
+//$punctuation = Yii::app()->punctuation;
+//$punctuation->serverStart();
+//$punctuation->checkText($text1,array('чиллеры','кодеигнайтеры'));
+$application->run();

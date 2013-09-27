@@ -41,7 +41,7 @@
                         'ajax' => array(
                             'type'=>'POST', //request type
                             'dataType'=>'json',
-                            'url'=>CController::createUrl('selecttemplate'), //url to call.
+                            'url'=>Yii::app()->createAbsoluteUrl('selecttemplate'), //url to call.
                             'success'=>'function(data) {
                                  //$("#Project_category_id").html(data.category_id);
                                  $("#Project_category_id").val(data.category_id).attr("selected",true);
@@ -55,7 +55,7 @@
                         )
                     )
                 );
-            ?>
+            ?>sdfsdf
         </div>
     <?php }else{
 
@@ -182,6 +182,22 @@
         <?php echo $form->labelEx($model,'tolerance'); ?>
         <?php echo $form->textField($model,'tolerance');?>
         <?php echo $form->error($model,'tolerance'); ?>
+    </div>
+
+    <!--список слов исключений, по которым не учитываем ошибки -->
+    <div class="row">
+        <?php echo $form->labelEx($model,'exception_words'); ?>
+        <?php
+            if($model->isNewRecord){
+                echo CHtml::textArea('exception_words', '',array('rows'=>5, 'cols'=>30, 'style'=>'width:250px;')) ;
+            }else{
+                echo CHtml::textArea('exception_words', implode('\r\n',json_decode($model->exception_words)),array('rows'=>5, 'cols'=>30, 'style'=>'width:250px;')) ;
+            }
+
+            //$form->textArea($model,'description',array('rows'=>10, 'cols'=>50, 'style'=>'width:650px;'))
+
+        ?>
+        <?php echo $form->error($model,'description'); ?>
     </div>
 
     <div class="row">

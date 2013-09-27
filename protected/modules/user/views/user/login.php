@@ -17,12 +17,12 @@ $this->breadcrumbs=array(
 
 
 
-<div class="form" style="width: 500px; margin: 0 auto;">
+<div class="form-vertical" id="login">
 <?php echo CHtml::beginForm(); ?>
     <p>Заполните следующую форму с вашими Логином и паролем:</p>
 	<p class="note"><?php echo UserModule::t('Fields with <span class="required">*</span> are required.'); ?></p>
 	
-	<?php echo CHtml::errorSummary($model); ?>
+	<?php echo CHtml::errorSummary($model,null, null, array('class'=>'alert alert-block alert-error')); ?>
 	
 	<div class="row">
 		<?php echo CHtml::activeLabelEx($model,'username'); ?>

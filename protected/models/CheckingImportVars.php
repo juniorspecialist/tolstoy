@@ -204,9 +204,12 @@ class CheckingImportVars extends CActiveRecord
      * получаем список проверок - весь
      */
     public static function getChekingList(){
+
+        $dependency = new CDbCacheDependency('SELECT MAX(id) FROM {{check}}');
+
         $sql = 'SELECT {{check}}.*
                 FROM {{check}}';
-        return Yii::app()->db->createCommand($sql)->queryAll();
+        return Yii::app()->db->cache(1000, $dependency)->createCommand($sql)->queryAll();
     }
 
     /*

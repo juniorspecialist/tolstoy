@@ -60,6 +60,8 @@ class PunctuationComponent extends CApplicationComponent{
         // массив отфильтрованных ошибок - в которых нет исключений по словам указанных админом
         $filteringPunctuationList = array();
 
+        $sickness = Yii::app()->sickness;
+
         // перебираем список найденных ошибок от сервера пунктуации
         foreach($this->punctuationErrors as $errorWord){
 
@@ -69,10 +71,21 @@ class PunctuationComponent extends CApplicationComponent{
                 //в котором сервер ПУНКТУАЦИИ, считает что есть ошибка
                 $findWord = mb_substr($text, $errorWord['offset'], $errorWord['errorlength'],'UTF-8');
 
-                echo $findWord.'<br>';
-                echo '<pre>'; print_r($errorWord);
+                //получаем слово-форму для найденного слова с ошибкой и сравниваем его со списком исключений
+                $lemmaArray = $sickness->baseFormForWord(array($findWord));
+
+                $sequenceKeys = Yii::app()->sequenceKeys;
+
+                $lemma = $sequenceKeys::indexIntoValueArray($lemmaArray);
+
+                if(!in_array($lemma[0], $this->listException)){
+                    $filteringPunctuationList[] = $errorWord;
+                }
             }
         }
+
+        $this->punctuationErrors = $filteringPunctuationList;
+        echo '<pre>'; print_r($this->punctuationErrors); die();
     }
 
     /*
@@ -100,6 +113,7 @@ class PunctuationComponent extends CApplicationComponent{
 
         //  выполняем команду запуска сервера ПУНКТУАЦИИ
         $res = shell_exec($command);
+        //die($command);
 
     }
 
@@ -162,6 +176,6 @@ class PunctuationComponent extends CApplicationComponent{
         // из XML формируем массив
         $array = MyText::simpleXMLToArray($xml);
 
-        $this->punctuationErrors = $array;
+        $this->punctuationErrors = $array['error'];
     }
 }

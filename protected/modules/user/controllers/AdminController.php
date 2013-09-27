@@ -85,6 +85,10 @@ class AdminController extends Controller
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
+
+            // список слов - исключений - преобразовываем в массив, потом в JSON
+            $model->exception_words = json_encode(explode(PHP_EOL,$_POST['exception_words']));
+
 			$model->activkey=Yii::app()->controller->module->encrypting(microtime().$model->password);
 			$profile->attributes=$_POST['Profile'];
 			$profile->user_id=0;
@@ -117,7 +121,10 @@ class AdminController extends Controller
 		{
 			$model->attributes=$_POST['User'];
 			$profile->attributes=$_POST['Profile'];
-			
+
+            // список слов - исключений - преобразовываем в массив, потом в JSON
+            $model->exception_words = json_encode(explode(PHP_EOL,$_POST['exception_words']));
+
 			if($model->validate()&&$profile->validate()) {
 				$old_password = User::model()->notsafe()->findByPk($model->id);
 				if ($old_password->password!=$model->password) {

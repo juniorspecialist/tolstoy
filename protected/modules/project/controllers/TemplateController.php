@@ -66,80 +66,92 @@ class TemplateController extends Controller{
         // заполнили данные формы шаблона и выставили соотвествия полей, предварительно загрузив файл импорта
    		if(isset($_POST['DescriptionTemplate']) ){//&& isset($_POST['ImportVarsShema'])
 
-            $listCheking = CheckingImportVars::getChekingList();
+            $transaction = Yii::app()->getDb()->beginTransaction();
 
-   			$model->attributes = $_POST['DescriptionTemplate'];
-
-            // преобразование даты из формата 30/11/2012 в UNIXTIME
-            if(!empty($_POST['DescriptionTemplate']['deadline']) && $_POST['DescriptionTemplate']['deadline']!=0){
-//               $parse_date = explode('/',$_POST['DescriptionTemplate']['deadline']);
-//               $model->deadline = mktime(0, 0, 0,  $parse_date[1],$parse_date[0], intval($parse_date[2]));
-            }
-
-   			if($model->validate()){
-
-               $model->save();
-
-                // получаем список проверок
+            try{
                 $listCheking = CheckingImportVars::getChekingList();
 
-               // цикл по полям и их соотвествиям
-               $cnt = 1;
-               foreach($_POST['ImportVarsShema'] as $i=>$shemVar){
-                   $shema = new ImportVarsShema();
-                   // ID внутреннй переменной
-                   $shema->import_var_id = $shemVar;
-                   // ID модели, к котор. подвязываем схему импорта
-                   $shema->num_id = $model->id;
-                   // положение по порядку
-                   $shema->num = $cnt;
-                   //тип схемы - для проекта или шаблона(сейчас для ШАБЛОНА)
-                   $shema->shema_type = ImportVarsShema::SHEMA_TYPE_TEMPLATE;
-                   // название столбца в файле импорта
-                   $shema->label = $_POST['label'][$i];
-                   // галочки по полям
-                   if($_POST['edit'][$i]==1){// редактирование
-                        $shema->edit = 1;
-                   }else{
-                       $shema->edit = 0;
-                   }
-                   // видимость поля
-                   if($_POST['visible'][$i]==1){
-                        $shema->visible = 1;
-                   }else{
-                       $shema->visible = 0;
-                   }
-                   // ВИЗИВИГ - редактор
-                   if($_POST['wysiwyg'][$i]==1){
-                        $shema->wysiwyg = 1;
-                   }else{
-                       $shema->wysiwyg = 0;
-                   }
+                $model->attributes = $_POST['DescriptionTemplate'];
 
-                   $shema->save();
+                // преобразование даты из формата 30/11/2012 в UNIXTIME
+                if(!empty($_POST['DescriptionTemplate']['deadline']) && $_POST['DescriptionTemplate']['deadline']!=0){
+//               $parse_date = explode('/',$_POST['DescriptionTemplate']['deadline']);
+//               $model->deadline = mktime(0, 0, 0,  $parse_date[1],$parse_date[0], intval($parse_date[2]));
+                }
 
-                   // сохраняем список проверок по полю
-                   $rowCheking = $_POST['ChekingVarID'][$i];// массив проверок поо полю
-                   for($k=0;$k<count($listCheking);$k++){
+                if($model->validate()){
 
-                       $row = $listCheking[$k];
+                    $model->save();
 
-                       $checking_import_vars = new CheckingImportVars();
-                       $checking_import_vars->type = 1;// шаблон
-                       $checking_import_vars->model_id = $model->id;
-                       $checking_import_vars->import_var_id = $shema->id;
-                       $checking_import_vars->checked_id = $row['id'];// ID проверки
-                       // если выбрали галочкой проверку
-                       if($rowCheking[$k+1]==1){//$k+1 - для корректности выбора по галочкам
-                           $checking_import_vars->selected = 1;
-                       }else{
-                           $checking_import_vars->selected = 0;
-                       }
-                       $checking_import_vars->save();
-                   }
-                   $cnt++;
-               }
-               $this->redirect(array('view','id'=>$model->id));
+                    // получаем список проверок
+                    $listCheking = CheckingImportVars::getChekingList();
+
+                    // цикл по полям и их соотвествиям
+                    $cnt = 1;
+                    foreach($_POST['ImportVarsShema'] as $i=>$shemVar){
+                        $shema = new ImportVarsShema();
+                        // ID внутреннй переменной
+                        $shema->import_var_id = $shemVar;
+                        // ID модели, к котор. подвязываем схему импорта
+                        $shema->num_id = $model->id;
+                        // положение по порядку
+                        $shema->num = $cnt;
+                        //тип схемы - для проекта или шаблона(сейчас для ШАБЛОНА)
+                        $shema->shema_type = ImportVarsShema::SHEMA_TYPE_TEMPLATE;
+                        // название столбца в файле импорта
+                        $shema->label = $_POST['label'][$i];
+                        // галочки по полям
+                        if(isset($_POST['edit'][$i])){// редактирование
+                            $shema->edit = 1;
+                        }else{
+                            $shema->edit = 0;
+                        }
+                        // видимость поля
+                        if(isset($_POST['visible'][$i])){
+                            $shema->visible = 1;
+                        }else{
+                            $shema->visible = 0;
+                        }
+                        // ВИЗИВИГ - редактор
+                        if(isset($_POST['wysiwyg'][$i])){
+                            $shema->wysiwyg = 1;
+                        }else{
+                            $shema->wysiwyg = 0;
+                        }
+
+                        $shema->save();
+
+                        // сохраняем список проверок по полю
+                        $rowCheking = $_POST['ChekingVarID'][$i];// массив проверок поо полю
+                        for($k=0;$k<count($listCheking);$k++){
+
+                            $row = $listCheking[$k];
+
+                            $checking_import_vars = new CheckingImportVars();
+                            $checking_import_vars->type = 1;// шаблон
+                            $checking_import_vars->model_id = $model->id;
+                            $checking_import_vars->import_var_id = $shema->id;
+                            $checking_import_vars->checked_id = $row['id'];// ID проверки
+
+                            // если выбрали галочкой проверку
+                            if($rowCheking[$k+1]==1){//$k+1 - для корректности выбора по галочкам
+                                $checking_import_vars->selected = 1;
+                            }else{
+                                $checking_import_vars->selected = 0;
+                            }
+                            $checking_import_vars->save();
+                        }
+                        $cnt++;
+                    }
+
+                    $transaction->commit();
+
+                    $this->redirect(array('view','id'=>$model->id));
+                }
+            }
+
+            catch(Exception $e){
+                return $transaction->rollback();
             }
    		}
 

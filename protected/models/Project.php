@@ -9,6 +9,8 @@ class Project extends CActiveRecord
     public $zipArchive;//Архив с проектом, ссылка на скачивание
     public $keyWordsProject; //Ключевые слова проекта
 
+    public $exception_words;// список слов исключений, ошибки по которым не учитываем при проверке
+
 
     // список статусов для задания, их много ))
     const CREATE_TASK = 1;//Задание создано – задание создано админом, исполнитель и редактор выбраны
@@ -192,6 +194,7 @@ class Project extends CActiveRecord
             'deadline_copy_to_redactor'=>'Дата сдачи проекта копирайтером редактору',
             'deadline_redactor_to_admin'=>'Дата сдачи проекта редактором администртору',
             'accept_project_admin'=>'Дата принятия проекта администратором',
+            'exception_words'=>'Слова исключения(при проверках-пунктуация и орфография)',
 		);
 	}
 
